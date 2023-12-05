@@ -1,8 +1,28 @@
+//env setup
+const PORT = process.env.PORT;
+const URL = process.env.DB_CONNECTOIN;
+const DB_NAME = process.env.DB_NAME;
+
+//require's
 const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
 
+//app usage
 const app = express();
+app.use(cors());
+app.use(express.json());
 
-//listen for request
-app.listen(4000, () => {
-  console.log("listening on port something but nothing");
-});
+//database connection
+mongoose
+  .connect(URL, { dbName: DB_NAME })
+  .then(
+    app.listen(PORT, () => {
+      console.log(
+        `connected to the database and port opened on http://localhost:${PORT}`
+      );
+    })
+  )
+  .catch((err) => {
+    console.log("could not connected to the database", err);
+  });
