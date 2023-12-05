@@ -1,5 +1,6 @@
 //env setup
-const PORT = process.env.PORT;
+require("dotenv").config();
+const PORT = process.env.PORT || 8000;
 const URL = process.env.DB_CONNECTOIN;
 const DB_NAME = process.env.DB_NAME;
 
