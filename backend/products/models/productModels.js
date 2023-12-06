@@ -1,9 +1,8 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const productSchema = new Schema(
   {
-    _id: Schema.Types.ObjectId, // Unique identifier for the product
     productName: {
       type: String,
       required: true,
@@ -11,17 +10,17 @@ const productSchema = new Schema(
 
     description: {
       type: String,
-      required: true,
+        required: true,
     }, // Detailed description of the product
 
     price: {
       type: Number,
-      required: true,
+        required: true,
     }, // Cost of the product
 
     status: {
       type: Boolean,
-      required: true,
+        required: true,
     }, // Status of the product (true for 'Available', false for 'Discontinued')
 
     isActive: {
@@ -34,11 +33,6 @@ const productSchema = new Schema(
       default: false,
     }, // A flag to indicate if the product is deleted
 
-    createDate: {
-      type: Date,
-      default: Date.now,
-    }, // Date and time when the product was added to the database
-
     deleteDate: {
       type: Date,
       default: null,
@@ -48,4 +42,4 @@ const productSchema = new Schema(
   { timestamps: true } // Adds createdAt and updatedAt timestamps
 );
 
-module.exports = mongoose.model('Product', productSchema);
+module.exports = mongoose.model("Product", productSchema);
