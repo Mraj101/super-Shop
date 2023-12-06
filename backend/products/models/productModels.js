@@ -1,20 +1,51 @@
-const mongoose=require('mongoose')
-const Schema=mongoose.Schema
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const productSchema=new Schema(
+const productSchema = new Schema(
+  {
+    _id: Schema.Types.ObjectId, // Unique identifier for the product
+    productName: {
+      type: String,
+      required: true,
+    }, // Name of the product
 
-            {
-                _id: ObjectId,          // Unique identifier for the product
-                productName: String,    // Name of the product
-                description: String,    // Detailed description of the product
-                price: Number,          // Cost of the product
-                status: Boolean,        // Status of the product (true for 'Available', false for 'Discontinued')
-                isActive: Boolean,      // Indicates if the product is currently active
-                isDeleted: Boolean,     // A flag to indicate if the product is deleted
-                createDate: Date,       // Date and time when the product was added to the database
-                deleteDate: Date        // Date and time when the product was marked as deleted (nullable)
-            }
+    description: {
+      type: String,
+      required: true,
+    }, // Detailed description of the product
 
+    price: {
+      type: Number,
+      required: true,
+    }, // Cost of the product
+
+    status: {
+      type: Boolean,
+      required: true,
+    }, // Status of the product (true for 'Available', false for 'Discontinued')
+
+    isActive: {
+      type: Boolean,
+      default: true,
+    }, // Indicates if the product is currently active
+
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    }, // A flag to indicate if the product is deleted
+
+    createDate: {
+      type: Date,
+      default: Date.now,
+    }, // Date and time when the product was added to the database
+
+    deleteDate: {
+      type: Date,
+      default: null,
+    },
+    // Date and time when the product was marked as deleted (nullable)
+  },
+  { timestamps: true } // Adds createdAt and updatedAt timestamps
 );
 
-module.exports=mongoose.model('product',productSchema)
+module.exports = mongoose.model('Product', productSchema);
