@@ -8,11 +8,14 @@ const DB_NAME = process.env.DB_NAME;
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const productRoutes=require('./products/routes/productRoutes')
 
 //app usage
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use("/api/products",productRoutes)
+
 
 //database connection
 mongoose
