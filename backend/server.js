@@ -11,6 +11,9 @@ const mongoose = require("mongoose");
 const productRoutes=require('./products/routes/productRoutes')
 const recieptRoutes=require('./reciepts/routes/recieptRoute')
 const saleRoutes=require('./sales/routes/saleRoute');
+const stockRoutes=require('./stocks/routes/stockRoutes');
+
+
 //app usage
 const app = express();
 app.use(cors());
@@ -18,6 +21,7 @@ app.use(express.json());
 app.use("/api/products",productRoutes);
 app.use("/api/reciepts",recieptRoutes);
 app.use("/api/sales",saleRoutes);
+app.use("/api/stocks",stockRoutes);
 
 //database connection
 mongoose
