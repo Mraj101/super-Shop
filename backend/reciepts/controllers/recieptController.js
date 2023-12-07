@@ -36,7 +36,7 @@ const getSingleReciept = async (req, res) => {
 
   if (!reciept) res.status(404).json({ error: "no such product" });
 
-  res.status(200).json(product);
+  res.status(200).json(reciept);
 };
 
 
