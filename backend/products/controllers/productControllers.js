@@ -55,9 +55,6 @@ const deleteProductById=async(req,res)=>{
 const updateProduct = async (req, res) => {
     const { id } = req.params;
 
-    console.log('hi');
-    console.log(req.body)
-    console.log(id)
   
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(404).json({ error: "no such workout or id" });

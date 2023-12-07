@@ -20,5 +20,5 @@ router.get("/getAll", getAllProducts);
 router.get("/:id",getSingleProduct);
 router.post("/crt",createProduct);
 router.delete("/:id",deleteProductById);
-router.post("/:id",updateProduct);
+router.put("/:id",updateProduct);
 module.exports = router;
