@@ -3,13 +3,13 @@ const Schema = mongoose.Schema;
 
 const stockSchema = new Schema(
   {
-    product_Id: {
-      type: String,
-      // required: true,
-    },
+    // product_Id: {
+    //   type: mongoose.Types.ObjectId,
+    //   required: true,
+    // },
     stockQuantity: {
       type: Number,
-      // required: true,
+      default: 0,
     }, // Cost of the product
 
     status: {
