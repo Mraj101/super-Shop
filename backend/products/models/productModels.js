@@ -5,7 +5,7 @@ const productSchema = new Schema(
   {
     productName: {
       type: String,
-      required: true,
+      // required: true,
     }, // Name of the product
 
     description: {
@@ -15,12 +15,12 @@ const productSchema = new Schema(
 
     price: {
       type: Number,
-        required: true,
+        // required: true,
     }, // Cost of the product
 
     status: {
       type: Boolean,
-        required: true,
+      default: true,
     }, // Status of the product (true for 'Available', false for 'Discontinued')
 
     isActive: {
