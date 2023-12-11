@@ -30,6 +30,7 @@ const CreateProductForm = () => {
       `http://localhost:8000/api/products/crt`,
       productData
     );
+    console.log("before data")
     console.log(res.data);
     // TODO: Add logic to send data to the backend/database
   };
