@@ -1,4 +1,5 @@
-import { React, useEffect, useState } from "react";
+// ... (import statements)
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Grid,
@@ -11,44 +12,37 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 
-const products = [
-  {
-    _id: "65703b5f5f144ba78b05bfb3",
-    productName: "Chips",
-    description: "Something we can eat",
-    price: 15,
-    status: true,
-    isActive: true,
-    isDeleted: false,
-    deleteDate: null,
-    createdAt: "2023-12-06T09:14:07.683+00:00",
-    updatedAt: "2023-12-06T09:14:07.683+00:00",
-    __v: 0,
-  },
-];
-
 const ShowProducts = () => {
   const [products, setProducts] = useState([]);
-  const [loading, setIsLoading] = useState(false);
+  const [loading, setIsLoading] = useState(true);  // Set loading to true initially
 
   const fetchProductList = async () => {
-    setIsLoading(true);
-    await axios
-      .get("http://localhost:8000/api/products/getAll")
-      .then((res) => {
-        setProducts(res.data);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    try {
+      const response = await axios.get("http://localhost:8000/api/products/getAll");
+      setProducts(response.data);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsLoading(false);  // Set loading to false after fetching data, regardless of success or failure
+    }
   };
 
   useEffect(() => {
     fetchProductList();
   }, []);
 
-  if (loading) return <CircularProgress />;
+  if (loading) {
+    return (
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        height="100vh" // You can adjust the height as needed
+      >
+        <CircularProgress color="primary" size={80} />
+      </Box>
+    );
+  }
 
   return (
     <Box

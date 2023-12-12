@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import {
-  TextField,
-  Button,
-  Box
-} from "@mui/material";
+import { TextField, Button, Box } from "@mui/material";
 // import { Link } from "react-router-dom";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
 const CreateProductForm = () => {
+  let navigate = useNavigate();
   const [productData, setProductData] = useState({
     productName: "",
     description: "",
@@ -30,8 +28,7 @@ const CreateProductForm = () => {
       `http://localhost:8000/api/products/crt`,
       productData
     );
-    console.log("before data")
-    console.log(res.data);
+    navigate("/");
     // TODO: Add logic to send data to the backend/database
   };
 
@@ -69,7 +66,6 @@ const CreateProductForm = () => {
         />
       </Box>
 
-      
       <Box p={2}>
         <Button type="submit" variant="contained" color="primary">
           Save
