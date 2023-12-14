@@ -19,6 +19,7 @@ const SingleProduct = () => {
   const [loading, setIsLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [stockQuantity, setStockQuantity] = useState(1);
+  const [cartQuantity,setCartQuantity]=useState(0)
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -49,6 +50,13 @@ const SingleProduct = () => {
   };
 
   const handleAddToCart = () => {
+    // Update the cart quantity in localStorage
+    const newCartQuantity = cartQuantity + quantity;
+    localStorage.setItem("cartQuantity", newCartQuantity);
+
+    // Update the state to trigger a re-render
+    setCartQuantity(newCartQuantity);
+
     // Replace this with your actual logic to add the product to the cart
     console.log("Product added to cart:", singleProduct);
   };
@@ -91,7 +99,8 @@ const SingleProduct = () => {
               </Typography>
             </CardContent>
 
-            <Box display="flex" alignItems="center">
+            <Box display="flex"  >
+
               <Box>
                 <IconButton onClick={handleDecreaseQuantity}>
                   <Typography mr={2}>quantity</Typography>
@@ -104,10 +113,8 @@ const SingleProduct = () => {
                   <AddIcon />
                 </IconButton>
               </Box>
+
               <Box
-                display="flex"
-                justifyContent="flex-end"
-                alignItems="flex-end"
                 style={{
                   padding: "10px",
                   position: "absolute",
