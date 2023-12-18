@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import {
@@ -13,13 +13,15 @@ import {
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-const SingleProduct = () => {
+import { AppContext } from "../context/ContextProvider";
+
+const SingleProduct = ({ cart, setCart }) => {
   const { id } = useParams();
+  const { cartProducts, setCartProducts } = useContext(AppContext);
   const [singleProduct, setSingleProduct] = useState({});
-  const [loading, setIsLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [stockQuantity, setStockQuantity] = useState(1);
-  const [cartQuantity,setCartQuantity]=useState(0)
+  const [loading, setIsLoading] = useState(false);
+  const [flag, setFlag] = useState();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -31,37 +33,31 @@ const SingleProduct = () => {
         setSingleProduct(response.data);
       } catch (error) {
         console.error("Error fetching product:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
     fetchProduct();
-  }, [id]);
+  }, []);
 
-  const handleIncreaseQuantity = () => {
-    setQuantity((prevQuantity) => prevQuantity + 1);
+  //console.log("tumne chuwa jakhm ko mere marham marham", singleProduct);
+
+  const handleStockUpdate = () => {};
+
+  const handleDecrease = () => {
+    if (quantity > 1) setQuantity((prev) => prev - 1);
   };
 
-  const handleDecreaseQuantity = () => {
-    if (quantity > 1) {
-      setQuantity((prevQuantity) => prevQuantity - 1);
-    }
-  };
-
-  const handleAddToCart = () => {
-    // Update the cart quantity in localStorage
-    const newCartQuantity = cartQuantity + quantity;
-    localStorage.setItem("cartQuantity", newCartQuantity);
-
-    // Update the state to trigger a re-render
-    setCartQuantity(newCartQuantity);
-
-    // Replace this with your actual logic to add the product to the cart
-    console.log("Product added to cart:", singleProduct);
+  const handleIncrease = () => {
+    if (quantity < 5) setQuantity((prev) => prev + 1);
   };
 
   const handleBuyNow = () => {};
+
+  const handleCart = (flag) => {
+    setCart((prev) => [...prev, flag]);
+  };
+
+  console.log("cart er jinish", cartProducts);
 
   return (
     <Box display="flex" justifyContent="center" mt={2} p={5}>
@@ -75,67 +71,74 @@ const SingleProduct = () => {
           position: "relative",
         }}
       >
-            <IconButton
-              style={{ position: "absolute", top: 10, right: 10 }}
-              onClick={handleIncreaseQuantity}
-            >
-              <AddIcon />
-            </IconButton>
+        <IconButton
+          style={{ position: "absolute", top: 10, right: 10 }}
+          onClick={handleStockUpdate}
+        >
+          <AddIcon />
+        </IconButton>
 
-            <CardMedia
-              component="img"
-              alt={singleProduct.productName}
-              height="200"
-              image={`URL_FOR_PRODUCT_IMAGE/${singleProduct._id}`}
-              sx={{ border: "2px solid red", width: "40%" }}
-            />
+        <CardMedia
+          component="img"
+          alt={singleProduct.productName}
+          height="200"
+          image={`URL_FOR_PRODUCT_IMAGE/${singleProduct._id}`}
+          sx={{ border: "2px solid yellow", width: "40%" }}
+        />
 
-            <CardContent style={{ flex: 1 }}>
-              {/* <Typography variant="h5" component="div">
+        <CardContent style={{ flex: 1 }}>
+          {/* <Typography variant="h5" component="div">
                 {singleProduct.productName}
               </Typography> */}
-              <Typography variant="body2" color="text.secondary">
-                {singleProduct.description}
-              </Typography>
-            </CardContent>
+          <Typography variant="body2" color="text.secondary">
+            {singleProduct.description}
+          </Typography>
+        </CardContent>
 
-            <Box display="flex"  >
+        <Box
+          display="flex"
+          flexDirection="column"
+          style={{
+            padding: "10px",
+            position: "absolute",
+            bottom: 0,
+            right: 0,
+          }}
+        >
+          <Box display="flex" justifyContent="flex-start" flexDirection="row">
+            <Typography m={0} p={0}>
+              quantity
+            </Typography>
+            <IconButton onClick={handleDecrease}>
+              <RemoveIcon />
+            </IconButton>
+            <Typography variant="body1" component="span">
+              {`${quantity}`}
+            </Typography>
+            <IconButton onClick={handleIncrease}>
+              <AddIcon />
+            </IconButton>
+          </Box>
 
-              <Box>
-                <IconButton onClick={handleDecreaseQuantity}>
-                  <Typography mr={2}>quantity</Typography>
-                  <RemoveIcon />
-                </IconButton>
-                <Typography variant="body1" component="span">
-                  {` ${quantity}`}
-                </Typography>
-                <IconButton onClick={handleIncreaseQuantity}>
-                  <AddIcon />
-                </IconButton>
-              </Box>
-
-              <Box
-                style={{
-                  padding: "10px",
-                  position: "absolute",
-                  bottom: 0,
-                  right: 0,
-                }}
+          <Box>
+            <Box>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleBuyNow}
               >
-                <Box>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleBuyNow}
-                  >
-                    Buy Now
-                  </Button>
-                  <IconButton color="primary" onClick={handleAddToCart}>
-                    <AddShoppingCartIcon sx={{ fontSize: 50 }} />
-                  </IconButton>
-                </Box>
-              </Box>
+                Buy Now
+              </Button>
+              <IconButton
+                color="primary"
+                onClick={() => handleCart(singleProduct)}
+                disabled={flag === false ? false : true}
+              >
+                <AddShoppingCartIcon sx={{ fontSize: 50 }} />
+              </IconButton>
             </Box>
+          </Box>
+        </Box>
       </Card>
     </Box>
   );

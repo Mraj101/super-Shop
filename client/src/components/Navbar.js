@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { React, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -13,26 +13,13 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Link } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({ cart }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [cartQuantity, setCartQuantity] = useState(0);
-
-  useEffect(() => {
-    // Fetch the cart quantity from localStorage on mount
-    const storedQuantity = localStorage.getItem("cartQuantity");
-
-    console.log("before null",storedQuantity);
-    if (storedQuantity) {
-      setCartQuantity(parseInt(storedQuantity, 10));
-    }
-
-    // Subscribe to changes in localStorage
-    
-  }, []);
 
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
   };
+  //console.log(cartQuantity, "cart");
 
   return (
     <>
@@ -50,14 +37,14 @@ const Navbar = () => {
             </Grid>
 
             <Grid item xs={8}>
-              <Link to={'/  '} style={{textDecoration:"none"}}>
+              <Link to={"/"} style={{ textDecoration: "none" }}>
                 <Typography
                   variant="h6"
                   style={{
                     fontFamily: "cursive",
                     fontSize: "2em",
                     textShadow: "2px 4px 10px #000000",
-                    color:"white",
+                    color: "white",
                   }}
                 >
                   Super Shop
@@ -67,8 +54,9 @@ const Navbar = () => {
 
             <Grid item xs={2} textAlign="right">
               <IconButton color="inherit" aria-label="cart">
-                <Badge badgeContent={cartQuantity} color="secondary">
+                <Badge color="secondary">
                   <ShoppingCartIcon />
+                  <span>{cart?.length}</span>
                 </Badge>
               </IconButton>
             </Grid>

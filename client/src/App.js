@@ -7,18 +7,19 @@ import Home from "./components/Home";
 import SingleProduct from "./components/product/SingleProduct";
 import Navbar from "./components/Navbar";
 
-
 function App() {
+  const [cart, setCart] = React.useState(0);
+
   return (
     <>
       <Router>
-            <Navbar></Navbar>
+        <Navbar cart={cart} />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/create" element={<CreateProductForm />} />
           <Route
             path="/product/:id"
-            element={<SingleProduct></SingleProduct>}
+            element={<SingleProduct cart={cart} setCart={setCart} />}
           />
         </Routes>
       </Router>
