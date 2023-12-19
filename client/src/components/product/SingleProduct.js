@@ -13,15 +13,16 @@ import {
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { AppContext } from "../context/ContextProvider";
+
 
 const SingleProduct = ({ cart, setCart }) => {
+
   const { id } = useParams();
-  const { cartProducts, setCartProducts } = useContext(AppContext);
   const [singleProduct, setSingleProduct] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [loading, setIsLoading] = useState(false);
-  const [flag, setFlag] = useState();
+  // const [flag, setFlag] = useState(false);
+  const [cartItem,setCartItem]=useState(false)
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -51,13 +52,35 @@ const SingleProduct = ({ cart, setCart }) => {
     if (quantity < 5) setQuantity((prev) => prev + 1);
   };
 
+  
   const handleBuyNow = () => {};
 
-  const handleCart = (flag) => {
-    setCart((prev) => [...prev, flag]);
+
+
+  const handleCart = () => {
+    console.log("inside handle cart", cart);
+    if (!cart.some((item)=>item._id==singleProduct._id)) {
+      setCart((oldCart) => [...oldCart, singleProduct]);
+      setCartItem(true);
+      console.log("inside if", cart)
+    }
   };
 
-  console.log("cart er jinish", cartProducts);
+
+
+  const handleRemove = () => {
+    
+    for (let i in cart) {
+      console.log(cart[i]);
+      i = parseInt(i);
+      cart.splice(i, 1)
+      console.log(cart, 'after splice')
+      setCart({...cart})
+      setCartItem(false)
+
+    }
+  };
+  //console.log(cart, "final cart");
 
   return (
     <Box display="flex" justifyContent="center" mt={2} p={5}>
@@ -129,13 +152,31 @@ const SingleProduct = ({ cart, setCart }) => {
               >
                 Buy Now
               </Button>
-              <IconButton
+
+              {/* <IconButton
                 color="primary"
-                onClick={() => handleCart(singleProduct)}
+                onClick={handleCart }
                 disabled={flag === false ? false : true}
               >
                 <AddShoppingCartIcon sx={{ fontSize: 50 }} />
-              </IconButton>
+              </IconButton> */}
+
+              {cartItem ? (
+                // If the product is in the cart, render the red "Remove from Cart" button
+                <Button
+                  onClick={handleRemove}
+                  variant="contained"
+                  color="secondary"
+                  sx={{ fontSize: 14 }}
+                >
+                  Remove from Cart
+                </Button>
+              ) : (
+                <IconButton color="primary" onClick={handleCart}>
+                  {/* // If the product is not in the cart, render the default shopping cart icon */}
+                  <AddShoppingCartIcon sx={{ fontSize: 50 }} />
+                </IconButton>
+              )}
             </Box>
           </Box>
         </Box>
