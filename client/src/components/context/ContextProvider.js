@@ -4,7 +4,8 @@ import { reducer } from "./reducers";
 export const AppContext = createContext();
 
 const initialState= {
-
+  fetchSingleProduct:[],
+  cartProduct:[],
 }
 
 
@@ -21,10 +22,10 @@ export const ContextProvider = ({ children }) => {
   );
 };
 
-export const useCart = () => {
+export const useData = () => {
   const context = useContext(AppContext);
   if (!context) {
     throw new Error("useCart must be used within a CartProvider");
   }
-  return ContextProvider;
+  return context;
 };

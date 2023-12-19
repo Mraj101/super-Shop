@@ -20,7 +20,7 @@ const Navbar = ({ cart }) => {
     setDrawerOpen(!drawerOpen);
   };
   //console.log(cartQuantity, "cart");
-
+ console.log(cart.length, "navbarcart")
   return (
     <>
       <AppBar position="static">
@@ -56,7 +56,7 @@ const Navbar = ({ cart }) => {
               <IconButton color="inherit" aria-label="cart">
                 <Badge color="secondary">
                   <ShoppingCartIcon />
-                  <span>{cart?.length}</span>
+                  <span>{(cart.length===0)?'':cart.length}</span>
                 </Badge>
               </IconButton>
             </Grid>
