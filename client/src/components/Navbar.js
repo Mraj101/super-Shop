@@ -1,4 +1,5 @@
-import { React, useState } from "react";
+// Navbar.js
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -6,21 +7,26 @@ import {
   IconButton,
   Typography,
   Badge,
-  List,
   Drawer,
+  List,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Link } from "react-router-dom";
 
-const Navbar = ({ cart }) => {
+const Navbar = ({ cart, setCart }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    // Initialize cart state with data from local storage on mount
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCart(storedCart);
+  }, [cart.length]);
 
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
   };
-  //console.log(cartQuantity, "cart");
- console.log(cart.length, "navbarcart")
+
   return (
     <>
       <AppBar position="static">
@@ -53,12 +59,14 @@ const Navbar = ({ cart }) => {
             </Grid>
 
             <Grid item xs={2} textAlign="right">
-              <IconButton color="inherit" aria-label="cart">
-                <Badge color="secondary">
-                  <ShoppingCartIcon />
-                  <span>{(cart.length===0)?'':cart.length}</span>
-                </Badge>
-              </IconButton>
+              <Link to={"/product/cart"} style={{ textDecoration: "none" }}>
+                <IconButton color="inherit" aria-label="cart">
+                  <Badge color="secondary">
+                    <ShoppingCartIcon />
+                    <span>{cart.length === 0 ? "" : cart.length}</span>
+                  </Badge>
+                </IconButton>
+              </Link>
             </Grid>
           </Grid>
         </Toolbar>
@@ -69,5 +77,6 @@ const Navbar = ({ cart }) => {
     </>
   );
 };
+
 
 export default Navbar;

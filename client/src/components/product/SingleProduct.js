@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import {
@@ -9,20 +9,17 @@ import {
   CardContent,
   CardMedia,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 
-
-const SingleProduct = ({ cart, setCart }) => {
-
+const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
   const { id } = useParams();
   const [singleProduct, setSingleProduct] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [loading, setIsLoading] = useState(false);
-  // const [flag, setFlag] = useState(false);
-  const [cartItem,setCartItem]=useState(false)
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -38,9 +35,16 @@ const SingleProduct = ({ cart, setCart }) => {
     };
 
     fetchProduct();
-  }, []);
+  }, [id]);
 
-  //console.log("tumne chuwa jakhm ko mere marham marham", singleProduct);
+  // Initialize cart and addedItems states with data from local storage on mount
+  useEffect(() => {
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCart(storedCart);
+
+    const storedAddedItems = JSON.parse(localStorage.getItem("addedItems")) || {};
+    setAddedItems(storedAddedItems);
+  }, [setCart, setAddedItems]);
 
   const handleStockUpdate = () => {};
 
@@ -52,34 +56,41 @@ const SingleProduct = ({ cart, setCart }) => {
     if (quantity < 5) setQuantity((prev) => prev + 1);
   };
 
-  
   const handleBuyNow = () => {};
 
-
-
   const handleCart = () => {
-    console.log("inside handle cart", cart);
-    if (!cart.some((item)=>item._id==singleProduct._id)) {
-      setCart((oldCart) => [...oldCart, singleProduct]);
-      setCartItem(true);
-      console.log("inside if", cart)
+    let itemInCart =
+      Array.isArray(cart) &&
+      cart.some((item) => item._id === singleProduct._id);
+    if (!itemInCart) {
+      const itemsToAdd = Array.from({ length: quantity }, (_, index) => ({
+        ...singleProduct,
+        quantity: index + 1,
+      }));
+
+      const newCart = [...cart, ...itemsToAdd];
+      setCart(newCart);
+      setAddedItems((prev) => ({ ...prev, [singleProduct._id]: true }));
+
+      localStorage.setItem("cart", JSON.stringify(newCart));
+      localStorage.setItem(
+        "addedItems",
+        JSON.stringify({ ...addedItems, [singleProduct._id]: true })
+      );
     }
   };
-
-
 
   const handleRemove = () => {
-    
-    for (let i in cart) {
-      console.log(cart[i]);
-      i = parseInt(i);
-      cart.splice(i, 1)
-      console.log(cart, 'after splice')
-      setCart({...cart})
-      setCartItem(false)
-
-    }
+    const updatedCart = cart.filter((item) => item._id !== singleProduct._id);
+    setCart(updatedCart);
+    setAddedItems((prev) => ({ ...prev, [singleProduct._id]: false }));
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    localStorage.setItem(
+      "addedItems",
+      JSON.stringify({ ...addedItems, [singleProduct._id]: false })
+    );
   };
+
   //console.log(cart, "final cart");
 
   return (
@@ -160,20 +171,17 @@ const SingleProduct = ({ cart, setCart }) => {
               >
                 <AddShoppingCartIcon sx={{ fontSize: 50 }} />
               </IconButton> */}
-
-              {cartItem ? (
-                // If the product is in the cart, render the red "Remove from Cart" button
+              {addedItems[singleProduct._id] ? (
                 <Button
                   onClick={handleRemove}
                   variant="contained"
                   color="secondary"
-                  sx={{ fontSize: 14 }}
+                  sx={{ fontSize: 14, marginLeft: 1 }}
                 >
                   Remove from Cart
                 </Button>
               ) : (
                 <IconButton color="primary" onClick={handleCart}>
-                  {/* // If the product is not in the cart, render the default shopping cart icon */}
                   <AddShoppingCartIcon sx={{ fontSize: 50 }} />
                 </IconButton>
               )}

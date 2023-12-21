@@ -20,7 +20,6 @@ const createProduct = async (req, res) => {
       _id: data._id,
     };
     let stockData = await Stocks.create(productId);
-    console.log(stockData);
     return res.status(201).json(data);
   } catch (error) {
     console.log(error);

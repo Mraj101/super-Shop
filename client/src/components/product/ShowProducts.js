@@ -20,10 +20,9 @@ const ShowProducts = () => {
     try {
       const response = await axios.get("http://localhost:8000/api/products/getAll");
       setProducts(response.data);
+      setIsLoading(false);
     } catch (err) {
       console.log(err);
-    } finally {
-      setIsLoading(false);  // Set loading to false after fetching data, regardless of success or failure
     }
   };
 
