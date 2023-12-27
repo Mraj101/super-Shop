@@ -59,9 +59,9 @@ const Navbar = ({ cart, setCart }) => {
             </Grid>
 
             <Grid item xs={2} textAlign="right">
-              <Link to={"/product/cart"} style={{ textDecoration: "none" }}>
-                <IconButton color="inherit" aria-label="cart">
-                  <Badge color="secondary">
+              <Link to="/singleProduct/cart" style={{ textDecoration: "none" }}>
+                <IconButton color="danger" aria-label="cart">
+                  <Badge color="primary">
                     <ShoppingCartIcon />
                     <span>{cart.length === 0 ? "" : cart.length}</span>
                   </Badge>
