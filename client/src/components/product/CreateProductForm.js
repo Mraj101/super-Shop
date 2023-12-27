@@ -11,6 +11,7 @@ const CreateProductForm = () => {
     description: "",
     price: null,
     status: true,
+    imageUrl: "", // Add the imageUrl field
   });
 
   const handleChange = (event) => {
@@ -44,6 +45,7 @@ const CreateProductForm = () => {
           required
         />
       </Box>
+
       <Box p={2}>
         <TextField
           fullWidth
@@ -61,6 +63,17 @@ const CreateProductForm = () => {
           label="Price"
           name="price"
           value={productData.price}
+          onChange={handleChange}
+          required
+        />
+      </Box>
+
+      <Box p={2}>
+        <TextField
+          fullWidth
+          label="Image URL"
+          name="imageUrl"
+          value={productData.imageUrl}
           onChange={handleChange}
           required
         />

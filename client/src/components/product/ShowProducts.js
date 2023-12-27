@@ -5,6 +5,7 @@ import {
   Grid,
   Card,
   CardContent,
+  CardMedia,
   Typography,
   Button,
   Box,
@@ -54,12 +55,39 @@ const ShowProducts = () => {
       <Grid container spacing={2}>
         {products.map((product) => (
           <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
-            <Card sx={{ width: "100%", height: "100%" }}>
-              <CardContent>
+            <Card  sx={{ 
+             width: "100%",
+             height: "100%",
+             border:"1px solid white",
+             backgroundColor:"#D7BA89",
+             borderRadius:"10px",
+             boxShadow:"2px 2px 4px grey",
+             margin:"px"
+             }}>
+              <CardContent sx={{ 
+               display:"flex",
+               flexDirection:"column",
+               alignItems:"center",
+               justifyContent:"center",
+               margin:"10px"
+             
+             }} >
                 <Typography variant="h5" component="div">
                   {product.productName}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+
+                <CardMedia
+                component="img"
+                alt={product.productName}
+                height="200"
+                image={product.imageUrl}
+                sx={{
+                width: "85%" ,
+                objectFit:"contain" 
+              }}
+              />
+                
+                <Typography variant="h6" color="text.secondary" m={2}>
                   {`Price: $${product.price}`}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">

@@ -44,7 +44,7 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
 
     const storedAddedItems = JSON.parse(localStorage.getItem("addedItems")) || {};
     setAddedItems(storedAddedItems);
-  }, [setCart, setAddedItems]);
+  }, [setCart,setAddedItems]);
 
   const handleStockUpdate = () => {};
 
@@ -59,19 +59,20 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
   const handleBuyNow = () => {};
 
   const handleCart = () => {
-    let itemInCart =
-      Array.isArray(cart) &&
-      cart.some((item) => item._id === singleProduct._id);
+    let itemInCart =Array.isArray(cart) && cart.some((item) => item._id === singleProduct._id);
+  
     if (!itemInCart) {
       const itemsToAdd = Array.from({ length: quantity }, (_, index) => ({
         ...singleProduct,
         quantity: index + 1,
       }));
-
+      
+  
       const newCart = [...cart, ...itemsToAdd];
       setCart(newCart);
       setAddedItems((prev) => ({ ...prev, [singleProduct._id]: true }));
-
+      
+  
       localStorage.setItem("cart", JSON.stringify(newCart));
       localStorage.setItem(
         "addedItems",
@@ -79,6 +80,7 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
       );
     }
   };
+  
 
   const handleRemove = () => {
     const updatedCart = cart.filter((item) => item._id !== singleProduct._id);
@@ -90,6 +92,8 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
       JSON.stringify({ ...addedItems, [singleProduct._id]: false })
     );
   };
+  console.log("i wonder what is in my single product,", singleProduct)
+  console.log("here is my added items", addedItems)
 
   //console.log(cart, "final cart");
 
@@ -101,8 +105,9 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
           flexDirection: "column",
           width: "100vh",
           height: "30vw",
-          border: "2px solid red",
+          border: "1px solid aqua",
           position: "relative",
+          boxShadow:"1px 1px 10px black"
         }}
       >
         <IconButton
@@ -113,57 +118,64 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
         </IconButton>
 
         <CardMedia
+        
           component="img"
           alt={singleProduct.productName}
           height="200"
-          image={`URL_FOR_PRODUCT_IMAGE/${singleProduct._id}`}
-          sx={{ border: "2px solid yellow", width: "40%" }}
+          image={`${singleProduct.imageUrl}`}
+          sx={{width: "50%" , height:"40%", objectFit:"contain"}}
         />
+         <CardContent >
+          {/* <Typography variant="h5" component="div">
+                {singleProduct.productName}
+              </Typography> */}
+              <Typography variant="body2" color="text.secondary">
+                          <span style={{ fontWeight: 'bold' }}>Product Name:</span> {singleProduct.productName}
+              </Typography>
+
+        </CardContent>
+
 
         <CardContent style={{ flex: 1 }}>
           {/* <Typography variant="h5" component="div">
                 {singleProduct.productName}
               </Typography> */}
           <Typography variant="body2" color="text.secondary">
-            {singleProduct.description}
+          <span style={{ fontWeight: 'bold' }}> Product Description:</span> {singleProduct.description}
           </Typography>
         </CardContent>
 
         <Box
           display="flex"
-          flexDirection="column"
+          flexDirection="row"
+          justifyContent="space-between"
           style={{
+            width:"96%",
             padding: "10px",
             position: "absolute",
             bottom: 0,
             right: 0,
           }}
         >
-          <Box display="flex" justifyContent="flex-start" flexDirection="row">
-            <Typography m={0} p={0}>
-              quantity
+          <Box display="flex" justifyContent="flex-start" flexDirection="row" sx={{ position:"relative", width:"25%"}}>
+            <Typography m={0} p={0} style={{position:"absolute", top:"11px",right:"1px"}}>
+              Quantity
             </Typography>
-            <IconButton onClick={handleDecrease}>
-              <RemoveIcon />
-            </IconButton>
-            <Typography variant="body1" component="span">
-              {`${quantity}`}
-            </Typography>
-            <IconButton onClick={handleIncrease}>
-              <AddIcon />
-            </IconButton>
+
+                <IconButton onClick={handleDecrease}>
+                  <RemoveIcon />
+                </IconButton>
+                <Typography variant="body1" component="span" sx={{position:"absolute",top:"11px",left:"37px"}}>
+                  {`${quantity}`}
+                </Typography>
+                <IconButton onClick={handleIncrease}>
+                  <AddIcon />
+                </IconButton>
+             
           </Box>
 
-          <Box>
-            <Box>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleBuyNow}
-              >
-                Buy Now
-              </Button>
-
+        
+            <Box sx={{width:"300px", position: "relative"}}>
               {/* <IconButton
                 color="primary"
                 onClick={handleCart }
@@ -171,22 +183,22 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
               >
                 <AddShoppingCartIcon sx={{ fontSize: 50 }} />
               </IconButton> */}
-              {addedItems[singleProduct._id] ? (
+              {addedItems[singleProduct._id]? (
                 <Button
                   onClick={handleRemove}
                   variant="contained"
                   color="secondary"
-                  sx={{ fontSize: 14, marginLeft: 1 }}
+                  sx={{ fontSize: 14, marginLeft: 1 ,position:"absolute",right:"1px"}}
                 >
                   Remove from Cart
                 </Button>
               ) : (
                 <IconButton color="primary" onClick={handleCart}>
-                  <AddShoppingCartIcon sx={{ fontSize: 50 }} />
+                  <AddShoppingCartIcon sx={{ fontSize: 50, position:"absolute",left:"245px" }} />
                 </IconButton>
               )}
             </Box>
-          </Box>
+          
         </Box>
       </Card>
     </Box>
