@@ -20,6 +20,7 @@ const ShowProducts = () => {
   const fetchProductList = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/products/getAll");
+      console.log(response.data, "reponse for the product");
       setProducts(response.data);
       setIsLoading(false);
     } catch (err) {
@@ -30,6 +31,7 @@ const ShowProducts = () => {
   useEffect(() => {
     fetchProductList();
   }, []);
+
 
   if (loading) {
     return (

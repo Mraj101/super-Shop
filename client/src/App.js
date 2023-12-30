@@ -10,9 +10,16 @@ import Carts from "./components/product/Carts";
 
 function App() {
   const [cart, setCart] = useState([]);
+  // const [remove,setRemove]=useState([])
   const [addedItems, setAddedItems] = useState({});
 
-  console.log("hi cart", cart);
+  const handleRemove = (id) => {
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    let updatedData = storedCart.filter((dt) => dt._id !== id);
+    localStorage.setItem("cart", JSON.stringify(updatedData));
+    setCart(updatedData);
+  };
+
   return (
     <>
       <Router>
@@ -24,14 +31,17 @@ function App() {
             path="/product/:id"
             element={
               <SingleProduct
-                setCart={ setCart }
-                cart={ cart }
+                setCart={setCart}
+                cart={cart}
                 addedItems={addedItems}
                 setAddedItems={setAddedItems}
               />
             }
           />
-          <Route path="/singleProduct/cart" element={<Carts cart={cart} />} />
+          <Route
+            path="/singleProduct/cart"
+            element={<Carts cart={cart} removeFromCart={handleRemove} />}
+          />
         </Routes>
       </Router>
     </>

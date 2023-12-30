@@ -78,5 +78,4 @@ const Navbar = ({ cart, setCart }) => {
   );
 };
 
-
 export default Navbar;

@@ -11,6 +11,7 @@ const CreateProductForm = () => {
     description: "",
     price: null,
     status: true,
+    stock:'',
     imageUrl: "", // Add the imageUrl field
   });
 
@@ -18,17 +19,23 @@ const CreateProductForm = () => {
     const { name, value } = event.target;
     setProductData((prevData) => ({
       ...prevData,
-      [name]: name === "status" ? value === "true" : value,
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const res = await axios.post(
+     await axios.post(
       `http://localhost:8000/api/products/crt`,
       productData
     );
+    
+    // await axios.post(
+    //   `http://localhost:8000/api/products/crt`,
+    //   productData
+    // );
+
     navigate("/");
     // TODO: Add logic to send data to the backend/database
   };
@@ -65,6 +72,16 @@ const CreateProductForm = () => {
           value={productData.price}
           onChange={handleChange}
           required
+        />
+      </Box>
+
+      <Box p={2}>
+        <TextField
+          fullWidth
+          label="Stocks"
+          name="stock"
+          value={productData.stock}
+          onChange={handleChange}
         />
       </Box>
 

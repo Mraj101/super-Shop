@@ -8,20 +8,22 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-const Carts = ({ cart, removeFromCart }) => {
+const Carts = ({ cart,removeFromCart }) => {
   // Create a map to store quantities for each product
-  const quantitiesMap = new Map();
+  
 
   // Count the occurrences of each product ID in the cart
-  const countQuantity = () => {
-    let qtyCount = new Map();
-    for (let c of cart) {
-      qtyCount.set(c._id, (qtyCount.get(c._id) || 0) + 1);
-    }
-    return qtyCount;
-  };
+  // const countQuantity = () => {
+  //   let qtyCount = new Map();
+  //   for (let c of cart) {
+  //     qtyCount.set(c._id, (qtyCount.get(c._id) || 0) + 1);
+  //   }
+  //   return qtyCount;
+  // };
 
-  const qtyCount = countQuantity();
+  // const qtyCount = countQuantity();
+
+ 
 
   return (
     <div
@@ -61,7 +63,7 @@ const Carts = ({ cart, removeFromCart }) => {
                 {product.description}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Total Quantity: {qtyCount.get(product._id)}
+                Total Quantity: {product.quantity}
               </Typography>
               <Button
                 variant="contained"
