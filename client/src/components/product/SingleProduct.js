@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+
 import {
   Button,
   Box,
@@ -15,12 +16,17 @@ import {
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import StockUpdateForm from "../Modals/StockUpdateForm";
 
 const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
   const { id } = useParams();
   const [singleProduct, setSingleProduct] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [loading, setIsLoading] = useState(false);
+  const [stockErrorMessage, setStockErrorMessage] = useState("");
+  const [availableStock, setAvailableStock] = useState("");
+  const [modal,setIsModal]=useState(false)
+  
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -48,18 +54,32 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
     setAddedItems(storedAddedItems);
   }, [setCart, setAddedItems]);
 
-  const handleStockUpdate = () => {};
+
+ const handleStockUpdate=()=>{
+
+  }
+  
 
   const handleDecrease = () => {
     if (quantity > 1) setQuantity((prev) => prev - 1);
   };
 
   const handleIncrease = () => {
-    if (quantity < 5) setQuantity((prev) => prev + 1);
+    if (quantity < Number(singleProduct.stock)) setQuantity((prev) => prev + 1);
   };
 
   const handleChange = (e) => {
-    setQuantity(Number(e.target.value));
+    const enteredQuantity = Number(e.target.value);
+
+    if (enteredQuantity <= Number(singleProduct.stock)) {
+      setQuantity(enteredQuantity);
+      setStockErrorMessage("");
+     
+    } else {
+      setStockErrorMessage(
+        `you only have ${singleProduct.stock} products in stock`
+      );
+    }
   };
 
   const handleBuyNow = () => {};
@@ -84,7 +104,14 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
     //   )
     // })
     let newInfo = cart.map((ct) => {
-      if (ct._id === id) {
+      if (ct._id === id && ct.quantity < Number(singleProduct.stock)) {
+        if (ct.quantity > Number(singleProduct.stock)) {
+          return ct.quantity =singleProduct.stock 
+
+        }
+        if(singleProduct.quantity>=Number(singleProduct.stock))
+          setAvailableStock("Added all items in the cart")
+        
         ct.quantity += quantity; // Update quantity for the matching item
       }
       return ct; // Return the updated or unchanged item
@@ -94,6 +121,7 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
     if (!newInfo.some((ct) => ct._id === id)) {
       // If not found, add a new item to the cart
       newInfo = [...newInfo, { ...singleProduct, quantity: quantity }];
+      console.log("here is my quantity");
     }
 
     // Now, `newInfo` contains the updated cart with the quantity changes or a new item added
@@ -123,6 +151,9 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
 
   //console.log(cart, "final cart");
 
+
+
+
   return (
     <Box display="flex" justifyContent="center" mt={2} p={5}>
       <Card
@@ -136,50 +167,56 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
           boxShadow: "1px 1px 10px black",
         }}
       >
-        <IconButton
-          style={{ position: "absolute", top: 10, right: 10 }}
-          onClick={handleStockUpdate}
-        >
-          <AddIcon />
-        </IconButton>
+        <Box style={{ height: "65%",position:"relative" }}>
+          <IconButton
+            style={{ position: "absolute", top: 10, right: 10 }}
+            onClick={()=>setIsModal(!modal)}
+          >
+            <AddIcon />
+          </IconButton>
 
-        <CardMedia
-          component="img"
-          alt={singleProduct.productName}
-          height="200"
-          image={`${singleProduct.imageUrl}`}
-          sx={{ width: "50%", height: "40%", objectFit: "contain" }}
-        />
-        <CardContent>
-          {/* <Typography variant="h5" component="div">
+
+          <CardMedia
+            component="img"
+            alt={singleProduct.productName}
+            height="200"
+            image={`${singleProduct.imageUrl}`}
+            sx={{ width: "50%", height: "40%", objectFit: "contain" }}
+            />
+          <CardContent>
+            {/* <Typography variant="h5" component="div">
                 {singleProduct.productName}
               </Typography> */}
-          <Typography variant="body2" color="text.secondary">
-            <span style={{ fontWeight: "bold" }}>Product Name:</span>{" "}
-            {singleProduct.productName}
-          </Typography>
-        </CardContent>
+            <Typography variant="body2" color="text.secondary">
+              <span style={{ fontWeight: "bold" }}>Product Name:</span>{" "}
+              {singleProduct.productName}
+            </Typography>
+          </CardContent>
 
-        <CardContent style={{ flex: 1 }}>
-          {/* <Typography variant="h5" component="div">
+          <CardContent style={{ flex: 1 }}>
+            {/* <Typography variant="h5" component="div">
                 {singleProduct.productName}
               </Typography> */}
-          <Typography variant="body2" color="text.secondary">
-            <span style={{ fontWeight: "bold" }}> Product Description:</span>{" "}
-            {singleProduct.description}
-          </Typography>
-        </CardContent>
-        
-        <CardContent>
-          {/* <Typography variant="h5" component="div">
+            <Typography variant="body2" color="text.secondary">
+              <span style={{ fontWeight: "bold" }}> Product Description:</span>{" "}
+              {singleProduct.description}
+            </Typography>
+          </CardContent>
+
+          {modal && <Box sx={{width:"40%",height:"200px",position:"absolute",right:"40px",top:"14px",display:"flex",alignItems:"center",justifyContent:"center",borderRadius:"5px",backgroundColor:"aqua",boxShadow:"1px 1px 4px red"}}>
+             <StockUpdateForm  />
+          </Box> }
+
+          <CardContent>
+            {/* <Typography variant="h5" component="div">
                 {singleProduct.productName}
               </Typography> */}
-          <Typography variant="body2" color="text.secondary">
-            <span style={{ fontWeight: "bold" }}>Product Name:</span>{" "}
-            {singleProduct.productName}
-          </Typography>
-        </CardContent>
-
+            <Typography variant="body2" color="text.secondary">
+              <span style={{ fontWeight: "bold" }}>Stock:</span>{" "}
+              {singleProduct.stock}
+            </Typography>
+          </CardContent>
+        </Box>
 
         <Box
           display="flex"
@@ -191,7 +228,6 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
             position: "absolute",
             bottom: 0,
             right: 0,
-            border:"2px solid black"
           }}
         >
           <Box display="flex" flexDirection="row" sx={{ width: "30%" }}>
@@ -208,6 +244,14 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
                 value={quantity}
                 onChange={handleChange}
               />
+              {stockErrorMessage &&  (
+                <Typography color="error">{ stockErrorMessage }</Typography>
+              )}
+
+              {availableStock && (
+                <Typography color="error">{ availableStock }</Typography>
+              )
+              }
             </Box>
             <IconButton onClick={handleIncrease}>
               <AddIcon />
@@ -243,10 +287,14 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
               color="primary"
               onClick={handleCart}
             >
-              <AddShoppingCartIcon sx={{ fontSize: 50 }} />
+              <AddShoppingCartIcon
+                disabled={quantity > Number(singleProduct.stock)}
+                sx={{ fontSize: 50 }}
+              />
             </IconButton>
           </Box>
         </Box>
+        
       </Card>
     </Box>
   );
