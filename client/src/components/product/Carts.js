@@ -5,10 +5,11 @@ import {
   Typography,
   Button,
   CardMedia,
+  TextField,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-const Carts = ({ cart,removeFromCart }) => {
+const Carts = ({ cart,removeFromCart,singleProduct,setQuantity,setStockErrorMessage,quantity }) => {
   // Create a map to store quantities for each product
   
 
@@ -22,6 +23,19 @@ const Carts = ({ cart,removeFromCart }) => {
   // };
 
   // const qtyCount = countQuantity();
+  const handleChange = (e) => {
+    const enteredQuantity = Number(e.target.value);
+
+    if (enteredQuantity <= Number(singleProduct.stock)) {
+      setQuantity(enteredQuantity);
+      setStockErrorMessage("");
+     
+    } else {
+      setStockErrorMessage(
+        `you only have ${singleProduct.stock} products in stock`
+      );
+    }
+  };
 
  
 
@@ -63,8 +77,17 @@ const Carts = ({ cart,removeFromCart }) => {
                 {product.description}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Total Quantity: {product.quantity}
+                Total Quantity: {(product.quantity>Number(product.stock))? (product.stock): product.quantity}
               </Typography>
+
+              <TextField
+                style={{ width: "90%" }}
+                label="Quantity"
+                name="quantity"
+                value={quantity}
+                onChange={handleChange}
+              />
+
               <Button
                 variant="contained"
                 color="secondary"
