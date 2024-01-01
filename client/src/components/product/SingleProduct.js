@@ -25,8 +25,7 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
   const [loading, setIsLoading] = useState(false);
   const [stockErrorMessage, setStockErrorMessage] = useState("");
   const [availableStock, setAvailableStock] = useState("");
-  const [modal,setIsModal]=useState(false)
-  
+  const [modal, setIsModal] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -36,10 +35,16 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
           `http://localhost:8000/api/products/${id}`
         );
         setSingleProduct(response.data);
+        console.log("response.data", response.data);
       } catch (error) {
         console.error("Error fetching product:", error);
       }
     };
+
+    // const fetchStock = async()=>{
+    //   setIsLoading(true);
+    //   const stockData = axios.get(`https://localhost:8000/stock`)
+    // }
 
     fetchProduct();
   }, [id]);
@@ -54,19 +59,15 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
     setAddedItems(storedAddedItems);
   }, [setCart, setAddedItems]);
 
+  const handleStockUpdate = () => {};
 
- const handleStockUpdate=()=>{
+  // const handleDecrease = () => {
+  //   if (quantity > 1) setQuantity((prev) => prev - 1);
+  // };
 
-  }
-  
-
-  const handleDecrease = () => {
-    if (quantity > 1) setQuantity((prev) => prev - 1);
-  };
-
-  const handleIncrease = () => {
-    if (quantity < Number(singleProduct.stock)) setQuantity((prev) => prev + 1);
-  };
+  // const handleIncrease = () => {
+  //   if (quantity < Number(singleProduct.stock)) setQuantity((prev) => prev + 1);
+  // };
 
   const handleChange = (e) => {
     const enteredQuantity = Number(e.target.value);
@@ -74,7 +75,6 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
     if (enteredQuantity <= Number(singleProduct.stock)) {
       setQuantity(enteredQuantity);
       setStockErrorMessage("");
-     
     } else {
       setStockErrorMessage(
         `you only have ${singleProduct.stock} products in stock`
@@ -104,14 +104,13 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
     //   )
     // })
     let newInfo = cart.map((ct) => {
-      if (ct._id === id && ct.quantity < Number(singleProduct.stock)) {
-        if (ct.quantity > Number(singleProduct.stock)) {
-          return ct.quantity =singleProduct.stock 
-
+      if (ct._id === id) {
+        if (ct.quantity > Number(singleProduct.stockQuantity)) {
+          return (ct.quantity = singleProduct.stockQuantity);
         }
-        if(singleProduct.quantity>=Number(singleProduct.stock))
-          setAvailableStock("Added all items in the cart")
-        
+        if (singleProduct.quantity >= Number(singleProduct.stockQuantity))
+          setAvailableStock("Added all items in the cart");
+
         ct.quantity += quantity; // Update quantity for the matching item
       }
       return ct; // Return the updated or unchanged item
@@ -151,9 +150,6 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
 
   //console.log(cart, "final cart");
 
-
-
-
   return (
     <Box display="flex" justifyContent="center" mt={2} p={5}>
       <Card
@@ -167,14 +163,13 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
           boxShadow: "1px 1px 10px black",
         }}
       >
-        <Box style={{ height: "65%",position:"relative" }}>
+        <Box style={{ height: "65%", position: "relative" }}>
           <IconButton
             style={{ position: "absolute", top: 10, right: 10 }}
-            onClick={()=>setIsModal(!modal)}
+            onClick={() => setIsModal(!modal)}
           >
             <AddIcon />
           </IconButton>
-
 
           <CardMedia
             component="img"
@@ -182,7 +177,7 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
             height="200"
             image={`${singleProduct.imageUrl}`}
             sx={{ width: "50%", height: "40%", objectFit: "contain" }}
-            />
+          />
           <CardContent>
             {/* <Typography variant="h5" component="div">
                 {singleProduct.productName}
@@ -203,9 +198,25 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
             </Typography>
           </CardContent>
 
-          {modal && <Box sx={{width:"40%",height:"200px",position:"absolute",right:"40px",top:"14px",display:"flex",alignItems:"center",justifyContent:"center",borderRadius:"5px",backgroundColor:"aqua",boxShadow:"1px 1px 4px red"}}>
-             <StockUpdateForm  />
-          </Box> }
+          {modal && (
+            <Box
+              sx={{
+                width: "40%",
+                height: "200px",
+                position: "absolute",
+                right: "40px",
+                top: "14px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: "5px",
+                backgroundColor: "aqua",
+                boxShadow: "1px 1px 4px red",
+              }}
+            >
+              <StockUpdateForm onSubmit={handleCart} />
+            </Box>
+          )}
 
           <CardContent>
             {/* <Typography variant="h5" component="div">
@@ -213,7 +224,7 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
               </Typography> */}
             <Typography variant="body2" color="text.secondary">
               <span style={{ fontWeight: "bold" }}>Stock:</span>{" "}
-              {singleProduct.stock}
+              {singleProduct.stockQuantity}
             </Typography>
           </CardContent>
         </Box>
@@ -221,7 +232,7 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
         <Box
           display="flex"
           flexDirection="row"
-          justifyContent="space-between"
+          justifyContent="flex-end"
           style={{
             width: "96%",
             padding: "10px",
@@ -230,13 +241,12 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
             right: 0,
           }}
         >
-          <Box display="flex" flexDirection="row" sx={{ width: "30%" }}>
-            <IconButton onClick={handleDecrease}>
+          {/* <Box display="flex" flexDirection="row" sx={{ width: "30%" }}> */}
+          {/* <IconButton onClick={handleDecrease}>
               <RemoveIcon />
-            </IconButton>
+            </IconButton> */}
 
-            {/* {`${quantity}`} */}
-            <Box>
+          {/* <Box>
               <TextField
                 style={{ width: "90%" }}
                 label="Quantity"
@@ -252,13 +262,13 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
                 <Typography color="error">{ availableStock }</Typography>
               )
               }
-            </Box>
-            <IconButton onClick={handleIncrease}>
+            </Box> */}
+          {/* <IconButton >
               <AddIcon />
             </IconButton>
-          </Box>
+          </Box> */}
 
-          <Box sx={{ width: "250px", position: "relative" }}>
+          <Box sx={{ width: "50px", position: "relative" }}>
             {/* <IconButton
                 color="primary"
                 onClick={handleCart }
@@ -282,11 +292,7 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
                 Remove from Cart
               </Button>
             )  */}
-            <IconButton
-              sx={{ position: "absolute", right: "0" }}
-              color="primary"
-              onClick={handleCart}
-            >
+            <IconButton color="primary" onClick={handleCart}>
               <AddShoppingCartIcon
                 disabled={quantity > Number(singleProduct.stock)}
                 sx={{ fontSize: 50 }}
@@ -294,7 +300,6 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
             </IconButton>
           </Box>
         </Box>
-        
       </Card>
     </Box>
   );
