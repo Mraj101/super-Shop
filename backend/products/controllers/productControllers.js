@@ -14,12 +14,15 @@ const getAllProducts = async (req, res) => {
 
 // Controller to create a new product
 const createProduct = async (req, res) => {
+  let { productData, stockData } = req.body;
   try {
-    let data = await Products.create(req.body);
-    let productId = {
-      _id: data._id,
-    };
-    let stockData = await Stocks.create(productId);
+    let stock = await Stocks.create({
+      // productId: data._id,
+      stockQuantity: stockData,
+    });
+    productData.stockId = stock._id;
+    let data = await Products.create(productData);
+    data.quantity = stock.stockQuantity;
     return res.status(201).json(data);
   } catch (error) {
     console.log(error);
@@ -33,11 +36,26 @@ const getSingleProduct = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     res.status(404).json({ error: "no such product is listed" });
   }
-  const product = await Products.findById(id);
+  let product = await Products.findById(id);
+  let stk = await Stocks.findById(product.stockId);
+  // let pushProduct = product;
+  // pushProduct.quantity = stk.stockQuantity;
+  console.log(stk.stockQuantity, "jis");
+  let st = stk.stockQuantity;
 
   if (!product) res.status(404).json({ error: "no such product" });
+  let data = {};
+  if (product) {
+    // let stock = await Stocks.findOne({ productId: id });
+    let data = {
+      ...product.toObject(), // Convert the Mongoose document to a plain object
+      stockQuantity: st,
+    };
+    console.log(data);
+    return res.status(200).json(data);
+  }
 
-  res.status(200).json(product);
+  // res.status(200).json(data);
 };
 
 // Controller to delete a product by ID
