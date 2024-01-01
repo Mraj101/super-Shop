@@ -29,13 +29,16 @@ const productSchema = new Schema(
       type: Date,
       default: null,
     },
-    stock:{
-      type:String,
-      default:0,
-    },
     imageUrl: {
       type: String, // Add this field for the image URL
     },
+    stockId: {
+      type: String,
+    },
+    // quantity: {
+    //   type: Number,
+    //   required: false,
+    // },
   },
   { timestamps: true }
 );
