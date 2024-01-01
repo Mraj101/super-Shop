@@ -18,6 +18,23 @@ const Home = () => {
           >
             Add Products
           </Button>
+
+          
+        </Link>
+
+        <Link to='/updateStock'>
+        <Button
+            color="primary"
+            variant="contained"
+            sx={{
+              margin: "30px",
+              marginRight: "auto",
+              backgroundColor: "brown",
+              color: "white",
+            }}
+          >
+            Update Stocks
+          </Button>
         </Link>
         <Box mt={5} mb={0}>
           <ShowProducts />

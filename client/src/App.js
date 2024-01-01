@@ -7,6 +7,7 @@ import Home from "./components/Home";
 import SingleProduct from "./components/product/SingleProduct";
 import Navbar from "./components/Navbar";
 import Carts from "./components/product/Carts";
+import UpdateStock from "./components/stocks/UpdateStock";
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -42,6 +43,7 @@ function App() {
             path="/singleProduct/cart"
             element={<Carts cart={cart} removeFromCart={handleRemove} />}
           />
+          <Route path={"/updateStock"} element={<UpdateStock/>}/>
         </Routes>
       </Router>
     </>

@@ -68,6 +68,8 @@ const Navbar = ({ cart, setCart }) => {
                 </IconButton>
               </Link>
             </Grid>
+
+            
           </Grid>
         </Toolbar>
       </AppBar>
