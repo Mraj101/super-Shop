@@ -3,18 +3,20 @@ const Schema = mongoose.Schema;
 
 const stockSchema = new Schema(
   {
-    // product_Id: {
+    // productId: {
     //   type: mongoose.Types.ObjectId,
+    //   ref:"Product",
     //   required: true,
     // },
     stockQuantity: {
       type: Number,
+      required: true,
       default: 0,
     }, // Cost of the product
 
     status: {
       type: Boolean,
-      // required: true,
+      default: true,
     }, // Status of the product (true for 'Available', false for 'Discontinued')
 
     isActive: {

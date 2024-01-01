@@ -32,6 +32,7 @@ const getSingleStock = async (req, res) => {
 
   const stock = await Stocks.findById(id);
 
+
   if (!stock) res.status(404).json({ error: "no such stock document" });
 
   res.status(200).json(stock);

@@ -4,18 +4,18 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 
 const StockUpdateForm = ({ onSubmit,modal }) => {
-  const [quantity, setQuantity] = useState(0);
+  const [stockQuantity, setStockQuantity] = useState(0);
 
   const handleDecrease = () => {
-    if (quantity > 0) setQuantity((prev) => prev - 1);
+    if (stockQuantity > 0) setStockQuantity((prev) => prev - 1);
   };
 
   const handleIncrease = () => {
-    setQuantity((prev) => prev + 1);
+    setStockQuantity((prev) => prev + 1);
   };
 
   const handleSubmit = () => {
-    onSubmit(quantity);
+    onSubmit(stockQuantity);
   };
 
   
@@ -27,10 +27,10 @@ const StockUpdateForm = ({ onSubmit,modal }) => {
           <RemoveIcon />
         </IconButton>
         <TextField
-          label="Quantity"
+          label="stockQuantity"
           type="number"
-          value={quantity}
-          onChange={(e) => setQuantity(e.target.value)}
+          value={stockQuantity}
+          onChange={(e) => setStockQuantity(e.target.value)}
           sx={{width:"30%",margin:"10px"}}
         />
         <IconButton onClick={handleIncrease} m={2}>

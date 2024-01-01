@@ -6,14 +6,18 @@ import { Link, useNavigate } from "react-router-dom";
 
 const CreateProductForm = () => {
   let navigate = useNavigate();
+
   const [productData, setProductData] = useState({
     productName: "",
     description: "",
     price: null,
     status: true,
-    stock:'',
     imageUrl: "", // Add the imageUrl field
   });
+
+  const [stockData, setStockData] = useState(0);
+  
+  
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -23,14 +27,16 @@ const CreateProductForm = () => {
     }));
   };
 
+  let body = {
+    productData: productData,
+    stockData: stockData,
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-     await axios.post(
-      `http://localhost:8000/api/products/crt`,
-      productData
-    );
-    
+    await axios.post(`http://localhost:8000/api/products/crt`, body);
+
     // await axios.post(
     //   `http://localhost:8000/api/products/crt`,
     //   productData
@@ -80,8 +86,8 @@ const CreateProductForm = () => {
           fullWidth
           label="Stocks"
           name="stock"
-          value={productData.stock}
-          onChange={handleChange}
+          value={stockData}
+          onChange={(e) => setStockData(e.target.value)}
         />
       </Box>
 

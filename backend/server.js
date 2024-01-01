@@ -24,8 +24,7 @@ app.use("/api/sales",saleRoutes);
 app.use("/api/stocks",stockRoutes);
 
 //database connection
-mongoose
-  .connect(URL, { dbName: DB_NAME })
+mongoose.connect(URL, { dbName: DB_NAME })
   .then(
     app.listen(PORT, () => {
       console.log(
