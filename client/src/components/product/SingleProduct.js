@@ -69,18 +69,18 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
   //   if (quantity < Number(singleProduct.stock)) setQuantity((prev) => prev + 1);
   // };
 
-  const handleChange = (e) => {
-    const enteredQuantity = Number(e.target.value);
+  // const handleChange = (e) => {
+  //   const enteredQuantity = Number(e.target.value);
 
-    if (enteredQuantity <= Number(singleProduct.stock)) {
-      setQuantity(enteredQuantity);
-      setStockErrorMessage("");
-    } else {
-      setStockErrorMessage(
-        `you only have ${singleProduct.stock} products in stock`
-      );
-    }
-  };
+  //   if (enteredQuantity <= Number(singleProduct.stock)) {
+  //     setQuantity(enteredQuantity);
+  //     setStockErrorMessage("");
+  //   } else {
+  //     setStockErrorMessage(
+  //       `you only have ${singleProduct.stock} products in stock`
+  //     );
+  //   }
+  // };
 
   const handleBuyNow = () => {};
 
