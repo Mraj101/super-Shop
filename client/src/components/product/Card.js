@@ -50,6 +50,8 @@ const ProductCard = ({ product }) => {
             margin: '10px',
           }}
         >
+    
+
           <Typography variant="h5" component="div">
             {product.productName}
           </Typography>

@@ -26,7 +26,7 @@ function App() {
       <Router>
         <Navbar cart={cart} setCart={setCart} />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route index element={<Home />} />
           <Route path="/create" element={<CreateProductForm />} />
           <Route
             path="/product/:id"

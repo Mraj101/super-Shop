@@ -156,9 +156,9 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
         style={{
           display: "flex",
           flexDirection: "column",
-          width: "100vh",
-          height: "30vw",
-          border: "1px solid aqua",
+          width: "80vw",
+          height: "100vh",
+          border: "10px solid aqua",
           position: "relative",
           boxShadow: "1px 1px 10px black",
         }}

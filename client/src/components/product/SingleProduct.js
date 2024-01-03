@@ -16,7 +16,7 @@ import {
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import StockUpdateForm from "../Modals/StockUpdateForm";
+
 
 const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
   const { id } = useParams();
@@ -25,7 +25,7 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
   const [loading, setIsLoading] = useState(false);
   const [stockErrorMessage, setStockErrorMessage] = useState("");
   const [availableStock, setAvailableStock] = useState("");
-  const [modal, setIsModal] = useState(false);
+ 
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -156,20 +156,14 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
         style={{
           display: "flex",
           flexDirection: "column",
-          width: "100vh",
-          height: "30vw",
+          width: "80vh",
+          height: "38vh",
           border: "1px solid aqua",
           position: "relative",
           boxShadow: "1px 1px 10px black",
         }}
       >
         <Box style={{ height: "65%", position: "relative" }}>
-          <IconButton
-            style={{ position: "absolute", top: 10, right: 10 }}
-            onClick={() => setIsModal(!modal)}
-          >
-            <AddIcon />
-          </IconButton>
 
           <CardMedia
             component="img"
@@ -198,25 +192,6 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
             </Typography>
           </CardContent>
 
-          {modal && (
-            <Box
-              sx={{
-                width: "40%",
-                height: "200px",
-                position: "absolute",
-                right: "40px",
-                top: "14px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: "5px",
-                backgroundColor: "aqua",
-                boxShadow: "1px 1px 4px red",
-              }}
-            >
-              <StockUpdateForm onSubmit={handleCart} />
-            </Box>
-          )}
 
           <CardContent>
             {/* <Typography variant="h5" component="div">

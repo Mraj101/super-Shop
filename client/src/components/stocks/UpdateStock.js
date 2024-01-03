@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import {
   Button,
@@ -22,11 +22,13 @@ const UpdateStock = ({ cart, setCart, setAddedItems, addedItems }) => {
   const { id } = useParams();
   const [prod, setProd] = useState({});
   const [stock, setStock] = useState([]);
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(0);
   const [loading, setIsLoading] = useState(false);
   const [stockErrorMessage, setStockErrorMessage] = useState("");
   const [availableStock, setAvailableStock] = useState("");
   const [modal, setIsModal] = useState(false);
+
+  let navigate = useNavigate();
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -64,22 +66,28 @@ const UpdateStock = ({ cart, setCart, setAddedItems, addedItems }) => {
   }, []);
 
   // Initialize cart and addedItems states with data from local storage on mount
-  useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    setCart(storedCart);
 
-    const storedAddedItems =
-      JSON.parse(localStorage.getItem("addedItems")) || {};
-    setAddedItems(storedAddedItems);
-  }, [setCart, setAddedItems]);
-
-  const handleStockUpdate = () => {};
-
-  const handleChange = (e) => {
+  const handleStockUpdate = (e) => {
     const enteredQuantity = Number(e.target.value);
     setQuantity(enteredQuantity);
-    console.log(enteredQuantity);
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios.put(`http://localhost:8000/api/stocks/update/${prod.stock._id}`, {
+      stockQuantity: quantity,
+    })
+    .then(() => {
+      window.location.reload();
+    })
+    .catch((error) => {
+      // Handle errors if needed
+      console.error("Error updating stock:", error);
+    });
+  
+    setQuantity(0);
+  };
+
 
   const handleBuyNow = () => {};
 
@@ -93,10 +101,10 @@ const UpdateStock = ({ cart, setCart, setAddedItems, addedItems }) => {
             style={{
               display: "flex",
               flexDirection: "column",
-             
-              width: "100vh",
-              height: "35vw",
-            
+
+              width: "65vw",
+              height: "70vh",
+
               position: "relative",
               boxShadow: "1px 1px 10px black",
             }}
@@ -104,48 +112,59 @@ const UpdateStock = ({ cart, setCart, setAddedItems, addedItems }) => {
             <Box
               style={{
                 textAlign: "center",
-                alignItems:"center",
+                alignItems: "center",
                 display: "flex",
-                flexDirection:"column",
+                flexDirection: "column",
+                height: "70%",
               }}
             >
-                  <CardContent>
-                    {/* <Typography variant="h5" component="div">
-              {singleProduct.productName}
-            </Typography> */}
-                    <Typography variant="h3" color="text.secondary">
-                      <span style={{ fontWeight: "bold" }}>In Stock:</span>{" "}
-                      {prod.stock.stockQuantity}
-                    </Typography>
-                  </CardContent>
+              <CardContent
+                sx={{
+                  width: "90%",
+                  height: "10%",
+                }}
+              >
+                <Typography
+                  variant="h3"
+                  color="text.secondary"
+                  sx={{
+                    width: "90%",
+                    height: "10%",
+                  }}
+                >
+                  <span style={{ fontWeight: "bold" }}>In Stock:</span>{" "}
+                  {prod.stock.stockQuantity}
+                </Typography>
+              </CardContent>
 
-                    <CardContent>
-                  {/* <Typography variant="h5" component="div">
-                      {singleProduct.productName}
-                    </Typography> */}
-                  <Typography variant="h6" color="text.secondary">
-                    <span style={{ fontWeight: "bold" }}>Product Name:</span>{" "}
-                    {prod.product.productName}
-                  </Typography>
-                </CardContent>
+              <CardContent>
+                <Typography variant="h6" color="text.secondary">
+                  <span style={{ fontWeight: "bold" }}>Product Name:</span>{" "}
+                  {prod.product.productName}
+                </Typography>
+              </CardContent>
 
-                <CardContent>
-                  {/* <Typography variant="h5" component="div">
-                      {singleProduct.productName}
-                    </Typography> */}
-                  <Typography variant="h6" color="text.secondary">
-                    <span style={{ fontWeight: "bold" }}>Product Description:</span>{" "}
-                    {prod.product.description}
-                  </Typography>
-                </CardContent>
+              <CardContent>
+                <Typography variant="h6" color="text.secondary">
+                  <span style={{ fontWeight: "bold" }}>
+                    Product Description:
+                  </span>{" "}
+                  {prod.product.description}
+                </Typography>
+              </CardContent>
 
-                <CardMedia
-            component="img"
-            alt={prod.product.productName}
-            height="200"
-            image={`${prod.product.imageUrl}`}
-            sx={{ width: "30%", height: "30%", objectFit: "contain" }}
-          />
+              <CardMedia
+                component="img"
+                alt={prod.product.productName}
+                image={`${prod.product.imageUrl}`}
+                sx={{
+                  width: "15%",
+                  height: "30%",
+                  objectFit: "contain",
+                  border: "1px solid black",
+                  boxShadow: "1px 1px 4px black",
+                }}
+              />
             </Box>
 
             <Box
@@ -153,18 +172,13 @@ const UpdateStock = ({ cart, setCart, setAddedItems, addedItems }) => {
               flexDirection="column"
               justifyContent="center"
               alignItems="center"
-              style={{
-                width: "96%",
-                padding: "20px",
-                margin:"10px"
-              }}
             >
               <Box>
                 <TextField
                   label="Quantity"
                   name="quantity"
                   value={quantity}
-                  onChange={handleChange}
+                  onChange={handleStockUpdate}
                 />
                 {stockErrorMessage && (
                   <Typography color="error">{stockErrorMessage}</Typography>
@@ -176,7 +190,11 @@ const UpdateStock = ({ cart, setCart, setAddedItems, addedItems }) => {
               </Box>
 
               <Box>
-                <Button variant="contained" color="primary">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={(e) => handleSubmit(e)}
+                >
                   Update
                 </Button>
               </Box>

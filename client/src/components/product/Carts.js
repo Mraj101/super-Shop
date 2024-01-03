@@ -74,8 +74,13 @@ const Carts = ({ cart,removeFromCart,singleProduct,setQuantity,setStockErrorMess
               />
 
               <Typography color="text.secondary">
-                {product.description}
+              <span>Description:</span>{product.description}
               </Typography>
+              
+              <Typography color="text.secondary">
+                <span>price</span>:{product.price}
+              </Typography>
+
               <Typography variant="body2" color="text.secondary">
                 Total Quantity: {(product.quantity>Number(product.stock))? (product.stock): product.quantity}
               </Typography>

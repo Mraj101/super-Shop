@@ -13,6 +13,6 @@ router.get("/getAllStocks", getAllStocks);
 router.get("/:id", getSingleStock);
 router.delete("/:id", deleteStockById);
 router.post("/crt", createStock);
-router.put("/:id", updateStock);
+router.put("/update/:id", updateStock);
 
 module.exports = router;
