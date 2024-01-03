@@ -32,7 +32,7 @@ const Navbar = ({ cart, setCart }) => {
       <AppBar position="static">
         <Toolbar>
           <Grid container alignItems="center">
-            <Grid item xs={2}>
+            {/* <Grid item xs={2}>
               <IconButton
                 color="inherit"
                 aria-label="menu"
@@ -40,9 +40,9 @@ const Navbar = ({ cart, setCart }) => {
               >
                 <MenuIcon />
               </IconButton>
-            </Grid>
+            </Grid> */}
 
-            <Grid item xs={8}>
+            <Grid item xs={10}>
               <Link to={"/"} style={{ textDecoration: "none" }}>
                 <Typography
                   variant="h6"
@@ -73,9 +73,9 @@ const Navbar = ({ cart, setCart }) => {
           </Grid>
         </Toolbar>
       </AppBar>
-      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer}>
+      {/* <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer}>
         <List>something</List>
-      </Drawer>
+      </Drawer> */}
     </>
   );
 };

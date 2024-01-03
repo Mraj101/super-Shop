@@ -43,7 +43,12 @@ function App() {
             path="/singleProduct/cart"
             element={<Carts cart={cart} removeFromCart={handleRemove} />}
           />
-          <Route path={"/updateStock"} element={<UpdateStock/>}/>
+          <Route path={"/stocks/:id"} element={<UpdateStock
+           setCart={setCart}
+           cart={cart}
+           addedItems={addedItems}
+           setAddedItems={setAddedItems}
+          />} />
         </Routes>
       </Router>
     </>

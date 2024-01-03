@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Products = require("../models/productModels"); // Adjust the path based on your project structure
 const Stocks = require("../../stocks/models/stockModels");
+
 const getAllProducts = async (req, res) => {
   try {
     const products = await Products.find({ isDeleted: false }).sort({
@@ -11,6 +12,7 @@ const getAllProducts = async (req, res) => {
     res.status(500).json({ error: "internal Server Error" });
   }
 };
+
 
 // Controller to create a new product
 const createProduct = async (req, res) => {
@@ -37,25 +39,34 @@ const getSingleProduct = async (req, res) => {
     res.status(404).json({ error: "no such product is listed" });
   }
   let product = await Products.findById(id);
-  let stk = await Stocks.findById(product.stockId);
+  console.log("my product in beck",product)
+
+  let stk=null;
+
+  if(product.stockId)
+      stk = await Stocks.findById(product.stockId);
+
+
   // let pushProduct = product;
   // pushProduct.quantity = stk.stockQuantity;
-  console.log(stk.stockQuantity, "jis");
-  let st = stk.stockQuantity;
+
 
   if (!product) res.status(404).json({ error: "no such product" });
+
   let data = {};
+
+
   if (product) {
     // let stock = await Stocks.findOne({ productId: id });
     let data = {
-      ...product.toObject(), // Convert the Mongoose document to a plain object
-      stockQuantity: st,
+      ...product._doc,
+      stockQuantity: stk ? stk.stockQuantity : null,
     };
     console.log(data);
     return res.status(200).json(data);
   }
 
-  // res.status(200).json(data);
+
 };
 
 // Controller to delete a product by ID
