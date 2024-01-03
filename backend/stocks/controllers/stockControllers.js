@@ -52,16 +52,22 @@ const deleteStockById = async (req, res) => {
 
 const updateStock = async (req, res) => {
   const { id } = req.params;
+  let stockQty = {...req.body}
+  let qty = stockQty.stockQuantity
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: "no such workout or id" });
   }
+  console.log(req.body,"beckedn stock");
+  const singleStock = await Stocks.findById(id);
   const stock = await Stocks.findByIdAndUpdate(
     { _id: id },
     {
-      ...req.body,
-    }
+      stockQuantity:singleStock.stockQuantity+qty
+    },
+    { new: true } 
   );
+
 
   if (!stock) return res.status(404).json({ error: "no such stocks exists" });
 
