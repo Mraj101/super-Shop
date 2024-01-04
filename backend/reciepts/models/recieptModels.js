@@ -17,29 +17,21 @@ const recieptSchema = new Schema(
 
     status: {
       type: Boolean,
-      requred: true,
+      default: true,
     }, // Status of the receipt (true for 'Generated', false for 'Pending' or 'Invalid')
     isActive: {
       type: Boolean,
-      required: true,
+      default: true,
     }, // Indicates if the receipt is currently active
     isDeleted: {
       type: Boolean,
-      required: true,
+      default: false,
     }, // A flag to indicate if the receipt is deleted
     soldProducts: [
       {
-        product_id: {
+        sale_id: {
           type: mongoose.Schema.Types.ObjectId,
-        },
-        quantity: {
-          type: Number,
-          required: true,
-        },
-        salePrice: {
-          type: Number,
-          required: true,
-        },
+        }
       },
     ],
     // Date and time when the receipt was marked as deleted (nullable)
