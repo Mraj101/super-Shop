@@ -9,24 +9,51 @@ import {
   Grid,
   Box,
   IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+ 
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import { json, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Carts = ({
   cart,
+  setCart,
   removeFromCart,
   singleProduct,
   setQuantity,
   setStockErrorMessage,
   quantity,
 }) => {
+    const navigate=useNavigate()
+
+
+  console.log((cart), "cart in cart.js")
+
+  
   const calculateTotalPrice = () => {
-    return cart.reduce((total, product) => {
-      return total + product.price * Math.min(product.quantity, product.stock);
-    }, 0);
+    let totalPrice = 0;
+  
+    for (const item of cart) {
+      // Assuming each item in 'cart' has a 'price' property
+      if (item.hasOwnProperty('price' && 'quantity')) {
+        let ItemPrice=parseInt(item.price*item.quantity)
+        totalPrice += ItemPrice || 0;
+      }
+    }
+  
+    console.log("total price:", totalPrice);
+    return totalPrice;
   };
+  
 
   const handleQuantityChange = (change) => {
     const newQuantity = quantity + change;
@@ -60,9 +87,21 @@ const Carts = ({
   };
 
   const handleCheckout = () => {
+    try {
+      for (items in  cart){
+        axios.post(`http://localhost:8000/api/sales/crt`,items)
+      }
+      
+    } catch (error) {
+      
+    }
+
+    setCart([])
+    localStorage.removeItem("cart")
     // Add logic for handling the checkout process
     // This can include navigating to a checkout page or sending the order to the server
     console.log("Checkout clicked!");
+    navigate('/');
   };
 
   return (
@@ -163,20 +202,33 @@ const Carts = ({
           )}
         </div>
       </Grid>
+      
 
       <Grid item xs={4}>
-        <Box
-          sx={{
-            border: 1,
-            borderColor: "primary.main",
-            borderRadius: 1,
-            p: 2,
-            textAlign: "right",
-          }}
-        >
-          <Typography variant="h6">
-            Total Price: ${calculateTotalPrice()}
-          </Typography>
+      <Paper elevation={6} style={{ padding: 16 }}>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Product Name</TableCell>
+                <TableCell>Quantity</TableCell>
+                <TableCell>Subtotal Price</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {cart.map((product) => (
+                <TableRow key={product._id}>
+                  <TableCell>{product.productName}</TableCell>
+                  <TableCell>{product.quantity}</TableCell>
+                  <TableCell>${product.price * product.quantity}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        <Box sx={{ textAlign: 'right', marginTop: 2 }}>
+          <Typography variant="h6">Total Price: ${calculateTotalPrice()}</Typography>
           <Button
             variant="contained"
             color="primary"
@@ -186,7 +238,13 @@ const Carts = ({
             Checkout
           </Button>
         </Box>
-      </Grid>
+      </Paper>
+    </Grid>
+    
+
+
+
+
     </Grid>
   );
 };

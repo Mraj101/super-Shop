@@ -8,6 +8,7 @@ import SingleProduct from "./components/product/SingleProduct";
 import Navbar from "./components/Navbar";
 import Carts from "./components/product/Carts";
 import UpdateStock from "./components/stocks/UpdateStock";
+import Reciepts from "./components/Reciepts/Reciepts";
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -41,7 +42,7 @@ function App() {
           />
           <Route
             path="/singleProduct/cart"
-            element={<Carts cart={cart} removeFromCart={handleRemove} />}
+            element={<Carts cart={cart} setCart={setCart} removeFromCart={handleRemove} />}
           />
           <Route path={"/stocks/:id"} element={<UpdateStock
            setCart={setCart}
@@ -49,6 +50,14 @@ function App() {
            addedItems={addedItems}
            setAddedItems={setAddedItems}
           />} />
+
+          <Route path={"/reciepts"} element={<Reciepts
+           setCart={setCart}
+           cart={cart}
+           addedItems={addedItems}
+           setAddedItems={setAddedItems}
+          />} />
+
         </Routes>
       </Router>
     </>
