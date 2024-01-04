@@ -14,7 +14,7 @@ const saleSchema = new Schema(
 
     status: {
       type: Boolean,
-      required: true,
+      default: true,
     }, // Status of the product (true for 'Available', false for 'Discontinued')
 
     isActive: {

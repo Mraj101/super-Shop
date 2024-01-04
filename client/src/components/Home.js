@@ -21,6 +21,19 @@ const Home = () => {
 
           
         </Link>
+        
+        <Link to="/reciepts" style={{ textDecoration: "none" }}>
+          <Button
+            color="secondary"
+            variant="contained"
+            startIcon={<AddCircleIcon />}
+            sx={{ margin: "30px", marginRight: "auto" }}
+          >
+            Show Reciepts
+          </Button>
+
+          
+        </Link>
 
         <Box mt={5} mb={0}>
           <ShowProducts />

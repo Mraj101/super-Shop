@@ -16,7 +16,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
- 
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
@@ -33,27 +32,24 @@ const Carts = ({
   setStockErrorMessage,
   quantity,
 }) => {
-    const navigate=useNavigate()
+  const navigate = useNavigate();
 
+  console.log(cart, "cart in cart.js");
 
-  console.log((cart), "cart in cart.js")
-
-  
   const calculateTotalPrice = () => {
     let totalPrice = 0;
-  
+
     for (const item of cart) {
       // Assuming each item in 'cart' has a 'price' property
-      if (item.hasOwnProperty('price' && 'quantity')) {
-        let ItemPrice=parseInt(item.price*item.quantity)
+      if (item.hasOwnProperty("price" && "quantity")) {
+        let ItemPrice = parseInt(item.price * item.quantity);
         totalPrice += ItemPrice || 0;
       }
     }
-  
+
     console.log("total price:", totalPrice);
     return totalPrice;
   };
-  
 
   const handleQuantityChange = (change) => {
     const newQuantity = quantity + change;
@@ -86,22 +82,30 @@ const Carts = ({
     }
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     try {
-      for (items in  cart){
-        axios.post(`http://localhost:8000/api/sales/crt`,items)
-      }
-      
-    } catch (error) {
-      
-    }
+      let data = [];
+      for (const item of cart) {
+        const { _id, productName, price, quantity, imageUrl } = item;
 
-    setCart([])
-    localStorage.removeItem("cart")
-    // Add logic for handling the checkout process
-    // This can include navigating to a checkout page or sending the order to the server
-    console.log("Checkout clicked!");
-    navigate('/');
+        const saleData = {
+          product_Id: _id,
+          quantitySold: quantity,
+        };
+
+        let res = await axios.post(
+          "http://localhost:8000/api/sales/crt",
+          saleData
+        );
+        data.push({ saleId: res.data._id });
+      }
+      console.log(data);
+      setCart([]);
+      localStorage.removeItem("cart");
+      navigate("/");
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -202,49 +206,50 @@ const Carts = ({
           )}
         </div>
       </Grid>
-      
 
       <Grid item xs={4}>
-      <Paper elevation={6} style={{ padding: 16 }}>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Product Name</TableCell>
-                <TableCell>Quantity</TableCell>
-                <TableCell>Subtotal Price</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {cart.map((product) => (
-                <TableRow key={product._id}>
-                  <TableCell>{product.productName}</TableCell>
-                  <TableCell>{product.quantity}</TableCell>
-                  <TableCell>${product.price * product.quantity}</TableCell>
+        <Paper elevation={6} style={{ padding: 16 }}>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Product Name</TableCell>
+                  <TableCell>Quantity</TableCell>
+                  <TableCell>Subtotal Price</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {cart.map((product) => (
+                  <TableRow key={product._id}>
+                    <TableCell>{product.productName}</TableCell>
+                    <TableCell>{product.quantity}</TableCell>
+                    <TableCell>${product.price * product.quantity}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
 
-        <Box sx={{ textAlign: 'right', marginTop: 2 }}>
-          <Typography variant="h6">Total Price: ${calculateTotalPrice()}</Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleCheckout}
-            style={{ marginTop: 2 }}
-          >
-            Checkout
-          </Button>
-        </Box>
-      </Paper>
-    </Grid>
-    
+          <Box sx={{ textAlign: "right", marginTop: 2 }}>
+            <Typography variant="h6">
+              Total Price: ${calculateTotalPrice()}
+            </Typography>
 
-
-
-
+            {cart.length > 0 ? (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleCheckout}
+                style={{ marginTop: 2 }}
+              >
+                Checkout
+              </Button>
+            ) : (
+              " "
+            )}
+          </Box>
+        </Paper>
+      </Grid>
     </Grid>
   );
 };

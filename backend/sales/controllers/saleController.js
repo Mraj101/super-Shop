@@ -17,9 +17,11 @@ const getAllSale = async (req, res) => {
 const createSale = async (req, res) => {
   try {
     let data = await Sales.create(req.body);
+    console.log(data, "sale data")
     return res.status(201).json(data);
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    console.log(error)
+    res.status(500).json({ messeg:"hi",error: "Internal Server Error" });
   }
 };
 
