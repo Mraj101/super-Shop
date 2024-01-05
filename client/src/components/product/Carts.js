@@ -93,16 +93,29 @@ const Carts = ({
           quantitySold: quantity,
         };
 
-        let res = await axios.post(
+        let Saleres = await axios.post(
           "http://localhost:8000/api/sales/crt",
           saleData
         );
-        data.push({ saleId: res.data._id });
+        data.push({ saleId: Saleres.data._id });
       }
-      console.log(data);
-      setCart([]);
-      localStorage.removeItem("cart");
-      navigate("/");
+
+      try {
+        
+      const receiptData = {
+        totalAmount: calculateTotalPrice(),
+        soldProducts: data.map((saleId) => ({ sale_id: String(saleId.saleId) })),
+      };
+        const reciptRes = await axios.post(
+          "http://localhost:8000/api/reciepts/crt",
+          receiptData
+        );
+        setCart([]);
+        localStorage.removeItem("cart");
+        navigate("/");
+      } catch (error) {
+        console.error("Error:", error);
+      }
     } catch (error) {
       console.error("Error:", error);
     }
