@@ -33,13 +33,12 @@ const UpdateStock = ({ cart, setCart, setAddedItems, addedItems }) => {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      await axios
+       axios
         .get(`http://localhost:8000/api/products/${id}`)
         .then((prodctRes) => {
           let stockId = prodctRes.data.stockId.toString();
           if (stockId) {
-            axios
-              .get(`http://localhost:8000/api/stocks/${stockId}`)
+             axios.get(`http://localhost:8000/api/stocks/${stockId}`)
               .then((stockRes) => {
                 const combinedData = {
                   product: prodctRes.data,

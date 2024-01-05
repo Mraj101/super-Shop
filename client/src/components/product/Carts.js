@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import {
   Card,
   CardContent,
@@ -33,6 +33,8 @@ const Carts = ({
   quantity,
 }) => {
   const navigate = useNavigate();
+  const [buyerName, setBuyerName] = useState('');
+  const [sellerName, setSellerName] = useState('');
 
   console.log(cart, "cart in cart.js");
 
@@ -86,11 +88,12 @@ const Carts = ({
     try {
       let data = [];
       for (const item of cart) {
-        const { _id, productName, price, quantity, imageUrl } = item;
+        const { _id,price,  quantity } = item;
 
         const saleData = {
           product_Id: _id,
           quantitySold: quantity,
+          soldPrice:price,                                                                  
         };
 
         let Saleres = await axios.post(
@@ -221,48 +224,62 @@ const Carts = ({
       </Grid>
 
       <Grid item xs={4}>
-        <Paper elevation={6} style={{ padding: 16 }}>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Product Name</TableCell>
-                  <TableCell>Quantity</TableCell>
-                  <TableCell>Subtotal Price</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {cart.map((product) => (
-                  <TableRow key={product._id}>
-                    <TableCell>{product.productName}</TableCell>
-                    <TableCell>{product.quantity}</TableCell>
-                    <TableCell>${product.price * product.quantity}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+  <Paper elevation={6} style={{ padding: 16 }}>
+    <TableContainer>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell >Product Name</TableCell>
+            <TableCell>Quantity</TableCell>
+            <TableCell>Subtotal Price</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody >
+          {cart.map((product) => (
+            <TableRow key={product._id}>
+              <TableCell>{product.productName}</TableCell>
+              <TableCell>{product.quantity}</TableCell>
+              <TableCell>${product.price * product.quantity}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
 
-          <Box sx={{ textAlign: "right", marginTop: 2 }}>
-            <Typography variant="h6">
-              Total Price: ${calculateTotalPrice()}
-            </Typography>
+    <Box sx={{ textAlign: "right", marginTop: 2 }}>
+      
+      {cart.length > 0 && (
+        <>
+          {/* <TextField
+            label="Buyer Name"
+            value={buyerName}
+            onChange={(e) => setBuyerName(e.target.value)}
+            style={{ marginBottom: 1 }}
+          />
+          <TextField
+            label="Seller Name"
+            value={sellerName}
+            onChange={(e) => setSellerName(e.target.value)}
+            style={{ marginBottom: 1 }}
+          /> */}
+          <Typography variant="h6">
+        Total Price: ${calculateTotalPrice()}
+      </Typography>
 
-            {cart.length > 0 ? (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleCheckout}
-                style={{ marginTop: 2 }}
-              >
-                Checkout
-              </Button>
-            ) : (
-              " "
-            )}
-          </Box>
-        </Paper>
-      </Grid>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleCheckout}
+            style={{ marginTop: 2 }}
+          >
+            Checkout
+          </Button>
+        </>
+      )}
+    </Box>
+  </Paper>
+</Grid>
+
     </Grid>
   );
 };

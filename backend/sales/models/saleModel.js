@@ -11,6 +11,10 @@ const saleSchema = new Schema(
       type: Number,
       required: true,
     }, // Cost of the product
+    soldPrice:{
+      type:String,
+      required:true,
+    },
 
     status: {
       type: Boolean,
