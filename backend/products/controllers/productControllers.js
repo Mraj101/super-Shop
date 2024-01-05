@@ -27,7 +27,6 @@ const createProduct = async (req, res) => {
     data.quantity = stock.stockQuantity;
     return res.status(201).json(data);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

@@ -20,7 +20,6 @@ const createSale = async (req, res) => {
     console.log(data, "sale data")
     return res.status(201).json(data);
   } catch (error) {
-    console.log(error)
     res.status(500).json({ messeg:"hi",error: "Internal Server Error" });
   }
 };

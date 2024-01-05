@@ -4,10 +4,10 @@ const { Schema } = mongoose;
 const recieptSchema = new Schema(
   {
     // Unique identifier for the receipt
-    receiptNumber: {
-      type: String,
-      required: true,
-    }, // A unique receipt number or code
+    // receiptNumber: {
+    //   type: String,
+    //   required: true,
+    // }, // A unique receipt number or code
     totalAmount: {
       type: Number,
       required: true,
@@ -30,7 +30,8 @@ const recieptSchema = new Schema(
     soldProducts: [
       {
         sale_id: {
-          type: mongoose.Schema.Types.ObjectId,
+          type: String,
+          required:true,
         }
       },
     ],
