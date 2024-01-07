@@ -6,24 +6,29 @@ const ReceiptCard = ({ receipt }) => {
     const [loading,setIsLoading]=useState(false)
     const [saleProducts,setSaleProducts]=useState([])
 
-    // const fetchSales = async () => {
-    //     try {
-    //       const saleRes = await axios.get(
-    //         "http://localhost:8000/api/sales/getAll"
-    //       );
-    //       console.log(saleRes.data, "reponse for the product");
-    //       saleProducts(saleRes.data);
-    //       setIsLoading(false);
-    //     } catch (err) {
-    //       console.log(err);
-    //     }
-    //   };
+    const fetchSales = async () => {
+        try {
+          let saleIds=receipt.soldProducts.map((singleProd)=>singleProd.sale_id)
+          for(let i=0;i<saleIds.length;i++){
+            const saleRes = await axios.get(
+              `http://localhost:8000/api/sales/${saleIds[i]}`
+            );
+            console.log(saleRes.data, "reponse for the product");
+          saleProducts(saleRes.data);
+          setIsLoading(false);
+          console.log(saleProducts,"saleProducts is brought")
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      };
 
-    //     useEffect(()=>{
-    //         fetchSales();
-    //     },[])
+        useEffect(()=>{
+            fetchSales();
+        },[])
+    
 
-    console.log("what is inside recipt?",receipt)
+  
   return (
     <Paper elevation={6} style={{ padding: 16, margin: 25 }}>
       <Typography variant="h5" align="center" gutterBottom>
