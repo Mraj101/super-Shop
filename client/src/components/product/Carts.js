@@ -100,14 +100,14 @@ const Carts = ({
           "http://localhost:8000/api/sales/crt",
           saleData
         );
-        data.push({ saleId: Saleres.data._id });
+        data.push(Saleres.data._id);
       }
 
       try {
         
       const receiptData = {
         totalAmount: calculateTotalPrice(),
-        soldProducts: data.map((saleId) => ({ sale_id: String(saleId.saleId) })),
+        soldProducts: data.map((saleid) => ({ sale_id: String(saleid) })),
       };
         const reciptRes = await axios.post(
           "http://localhost:8000/api/reciepts/crt",
