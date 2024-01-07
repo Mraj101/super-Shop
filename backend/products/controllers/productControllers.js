@@ -33,39 +33,35 @@ const createProduct = async (req, res) => {
 
 // Controller to get a single product by ID
 const getSingleProduct = async (req, res) => {
-  const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    res.status(404).json({ error: "no such product is listed" });
-  }
-  let product = await Products.findById(id);
-  console.log("my product in beck",product)
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ error: "Invalid product ID" });
+    }
 
-  let stk=null;
+    let product = await Products.findById(id);
 
-  if(product.stockId)
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    let stk = null;
+
+    if (product.stockId) {
       stk = await Stocks.findById(product.stockId);
+    }
 
-
-  // let pushProduct = product;
-  // pushProduct.quantity = stk.stockQuantity;
-
-
-  if (!product) res.status(404).json({ error: "no such product" });
-
-  let data = {};
-
-
-  if (product) {
-    // let stock = await Stocks.findOne({ productId: id });
     let data = {
       ...product._doc,
       stockQuantity: stk ? stk.stockQuantity : null,
     };
-    console.log(data);
+
+    console.log("Product data:", data);
     return res.status(200).json(data);
+  } catch (error) {
+    console.error("Error in getSingleProduct:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
-
-
 };
 
 // Controller to delete a product by ID

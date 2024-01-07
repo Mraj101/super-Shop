@@ -12,21 +12,23 @@ const ReceiptCard = ({ receipt }) => {
           let saleId=receipt.soldProducts.map((sale)=>(sale.sale_id))
           for(let i=0;i<saleId.length;i++){
             const saleRes = await axios.get(
-              `http://localhost:8000/api/products/${saleId[i]}`
+              `http://localhost:8000/api/sales/${saleId[i]}`
             );
             console.log(saleRes.data, "reponse for the product");
-            saleProducts(saleRes.data);
-            setIsLoading(false);
+            setSaleProducts(saleRes.data);
+
+            try {
+              if(saleProducts){
+                let prodId=saleProducts.product_Id;
+                const prodRes= await axios.get(`http://localhost:8000/api/products/${prodId}`)
+                setSingleProds(prodRes.data)
+              }
+            } catch (error) {
+              console.log(error,"error of recipt card")
+            }
+           setIsLoading(false);
             console.log(saleProducts, "reponse for the slaessdkfskdfsdklfklsd");
           }
-          
-          // try {
-          //   saleRes=axios.get(`http://localhost:8000/api/sales/`)
-          // } catch () {
-            
-          // }
-
-
 
         } catch (err) {
           console.log(err);
@@ -39,6 +41,7 @@ const ReceiptCard = ({ receipt }) => {
 
     console.log(receipt, "recipt");
     
+    console.log(saleProducts,"here is my prod id");
 
   
   return (
@@ -60,7 +63,7 @@ const ReceiptCard = ({ receipt }) => {
             {receipt.soldProducts.map((soldProduct) => (
               <TableRow key={soldProduct._id}>
                 <TableCell>{singleProds.productName}</TableCell>
-                <TableCell>{none}</TableCell>
+                <TableCell>{""}</TableCell>
                 <TableCell>{singleProds.price}</TableCell>
               </TableRow>
             ))}

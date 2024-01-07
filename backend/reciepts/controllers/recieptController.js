@@ -32,11 +32,15 @@ const getSingleReciept = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     res.status(404).json({ error: "no such product is listed" });
   }
-  const reciept = await Reciepts.findById(id);
+  try {
+    const reciept = await Reciepts.findById(id);
+    if (!reciept) res.status(404).json({ error: "no such product" });
+    res.status(200).json(reciept);
+  } catch (error) {
+    res.status(404).json({ error: error.msg });
+  }
 
-  if (!reciept) res.status(404).json({ error: "no such product" });
 
-  res.status(200).json(reciept);
 };
 
 
