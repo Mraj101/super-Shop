@@ -5,19 +5,29 @@ import axios from 'axios';
 const ReceiptCard = ({ receipt }) => {
     const [loading,setIsLoading]=useState(false)
     const [saleProducts,setSaleProducts]=useState([])
+    const [singleProds,setSingleProds]=useState([])
 
     const fetchSales = async () => {
         try {
-          let saleIds=receipt.soldProducts.map((singleProd)=>singleProd.sale_id)
-          for(let i=0;i<saleIds.length;i++){
+          let saleId=receipt.soldProducts.map((sale)=>(sale.sale_id))
+          for(let i=0;i<saleId.length;i++){
             const saleRes = await axios.get(
-              `http://localhost:8000/api/sales/${saleIds[i]}`
+              `http://localhost:8000/api/products/${saleId[i]}`
             );
             console.log(saleRes.data, "reponse for the product");
-          saleProducts(saleRes.data);
-          setIsLoading(false);
-          console.log(saleProducts,"saleProducts is brought")
+            saleProducts(saleRes.data);
+            setIsLoading(false);
+            console.log(saleProducts, "reponse for the slaessdkfskdfsdklfklsd");
           }
+          
+          // try {
+          //   saleRes=axios.get(`http://localhost:8000/api/sales/`)
+          // } catch () {
+            
+          // }
+
+
+
         } catch (err) {
           console.log(err);
         }
@@ -26,6 +36,8 @@ const ReceiptCard = ({ receipt }) => {
         useEffect(()=>{
             fetchSales();
         },[])
+
+    console.log(receipt, "recipt");
     
 
   
@@ -47,9 +59,9 @@ const ReceiptCard = ({ receipt }) => {
           <TableBody>
             {receipt.soldProducts.map((soldProduct) => (
               <TableRow key={soldProduct._id}>
-                <TableCell>{/* Product Name Here */}</TableCell>
-                <TableCell>{soldProduct.quantity}</TableCell>
-                <TableCell>{/* Subtotal Price Here */}</TableCell>
+                <TableCell>{singleProds.productName}</TableCell>
+                <TableCell>{none}</TableCell>
+                <TableCell>{singleProds.price}</TableCell>
               </TableRow>
             ))}
           </TableBody>
