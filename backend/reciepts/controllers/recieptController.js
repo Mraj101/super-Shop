@@ -35,6 +35,7 @@ const getSingleReciept = async (req, res) => {
   try {
     const reciept = await Reciepts.findById(id);
     if (!reciept) res.status(404).json({ error: "no such product" });
+    console.log(reciept,"hey recipt")
     res.status(200).json(reciept);
   } catch (error) {
     res.status(404).json({ error: error.msg });
