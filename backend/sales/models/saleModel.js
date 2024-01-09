@@ -7,6 +7,10 @@ const saleSchema = new Schema(
       type: String,
       required: true,
     },
+    stockId:{
+      type:String,
+      required:true,
+    },
     quantitySold: {
       type: Number,
       required: true,
