@@ -18,7 +18,6 @@ const Navbar = ({ cart, setCart }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
-    // Initialize cart state with data from local storage on mount
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCart(storedCart);
   }, [cart.length]);

@@ -59,6 +59,7 @@ const updateStock = async (req, res) => {
     return res.status(404).json({ error: "no such workout or id" });
   }
   console.log(req.body,"beckedn stock");
+
   const singleStock = await Stocks.findById(id);
   const stock = await Stocks.findByIdAndUpdate(
     { _id: id },

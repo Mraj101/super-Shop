@@ -54,10 +54,10 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCart(storedCart);
 
-    const storedAddedItems =
-      JSON.parse(localStorage.getItem("addedItems")) || {};
-    setAddedItems(storedAddedItems);
-  }, [setCart, setAddedItems]);
+    // const storedAddedItems =
+    //   JSON.parse(localStorage.getItem("addedItems")) || {};
+    // setAddedItems(storedAddedItems);
+  }, [setCart]);
 
   const handleStockUpdate = () => {};
 
@@ -82,7 +82,7 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
   //   }
   // };
 
-  const handleBuyNow = () => {};
+  
 
   const handleCart = () => {
     // let itemInCart =Array.isArray(cart) && cart.some((item) => item._id === singleProduct._id);
@@ -126,13 +126,13 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
     // Now, `newInfo` contains the updated cart with the quantity changes or a new item added
 
     setCart(newInfo);
-    setAddedItems((prev) => ({ ...prev, [singleProduct._id]: true }));
+    // setAddedItems((prev) => ({ ...prev, [singleProduct._id]: true }));
 
     localStorage.setItem("cart", JSON.stringify(newInfo));
-    localStorage.setItem(
-      "addedItems",
-      JSON.stringify({ ...addedItems, [singleProduct._id]: true })
-    );
+    // localStorage.setItem(
+    //   "addedItems",
+    //   JSON.stringify({ ...addedItems, [singleProduct._id]: true })
+    // );
   };
 
   // const handleRemove = () => {

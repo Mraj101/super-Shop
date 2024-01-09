@@ -5,20 +5,30 @@ import { Grid } from '@mui/material';
 
 const Reciepts = () => {
   const [receipts, setReceipts] = useState([]);
+  const [saleProducts, setSaleProducts] = useState([]);
+  const [singleProds, setSingleProds] = useState([]);
+  const [loading, setIsLoading] = useState(false);
+
+
+
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/api/reciepts/getAll/');
+      setReceipts(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/api/reciepts/getAll/');
-        setReceipts(response.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
+  
     fetchData();
-  }, []); // Empty dependency array ensures useEffect runs only once
+  }, []);
 
+
+
+ 
   return (
     <Grid container spacing={2}>
       {receipts.map((receipt) => (

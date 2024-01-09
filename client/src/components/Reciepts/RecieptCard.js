@@ -1,53 +1,76 @@
-import React, { useEffect, useState } from 'react';
-import { Paper, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Typography, Box, Button } from '@mui/material';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import {
+  Paper,
+  Table,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Typography,
+  Box,
+  Button,
+  CircularProgress
+} from "@mui/material";
+import axios from "axios";
+
 
 const ReceiptCard = ({ receipt }) => {
-    const [loading,setIsLoading]=useState(false)
-    const [saleProducts,setSaleProducts]=useState([])
-    const [singleProds,setSingleProds]=useState([])
+  const [loading, setIsLoading] = useState(false);
+  const [saleProducts, setSaleProducts] = useState([]);
+  const [singleProds, setSingleProds] = useState([]);
 
-    const fetchSales = async () => {
+  const fetchSales = async () => {
+    try {
+      console.log("here is my reciept",receipt)
+      let saleId = receipt.soldProducts.map((sale) => sale.sale_id);
+      for (let i = 0; i < saleId.length; i++) {
+        const saleRes = await axios.get(
+          `http://localhost:8000/api/sales/${saleId[i]}`
+        );
+        console.log(saleRes.data, "reponse for the Sale");
+        setSaleProducts((prev) => {
+          return [...prev, saleRes.data];
+        });
+
         try {
-          let saleId=receipt.soldProducts.map((sale)=>(sale.sale_id))
-          for(let i=0;i<saleId.length;i++){
-            const saleRes = await axios.get(
-              `http://localhost:8000/api/sales/${saleId[i]}`
+          if (saleRes.data) {
+            let prodId = saleRes.data.product_Id;
+            const prodRes = await axios.get(
+              `http://localhost:8000/api/products/${prodId}`
             );
-            console.log(saleRes.data, "reponse for the product");
-            setSaleProducts(saleRes.data);
-
-            try {
-              if(saleProducts){
-                let prodId=saleProducts.product_Id;
-                const prodRes= await axios.get(`http://localhost:8000/api/products/${prodId}`)
-                setSingleProds(prodRes.data)
-              }
-            } catch (error) {
-              console.log(error,"error of recipt card")
-            }
-           setIsLoading(false);
-            console.log(saleProducts, "reponse for the slaessdkfskdfsdklfklsd");
+            setSingleProds((prev) => {
+              return [...prev, prodRes.data];
+            });
           }
-
-        } catch (err) {
-          console.log(err);
+        } catch (error) {
+          console.log(error, "error of recipt card");
         }
-      };
+        setIsLoading(false);
+        console.log(
+          Array.isArray(saleProducts),
+          "reponse for the slaessdkfskdfsdklfklsd"
+        );
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-        useEffect(()=>{
-            fetchSales();
-        },[])
+  useEffect(() => {
+    fetchSales();
+  }, []);
 
-    console.log(receipt, "recipt");
-    
-    console.log(saleProducts,"here is my prod id");
+  console.log(receipt, "recipt");
 
-  
+  console.log(singleProds, "here is my singleProd");
+  console.log(saleProducts, "success");
+
+ 
   return (
     <Paper elevation={6} style={{ padding: 16, margin: 25 }}>
       <Typography variant="h5" align="center" gutterBottom>
-        Receipt Number: {receipt.receiptNumber}
+        Receipt Number: {receipt._id}
       </Typography>
 
       <TableContainer>
@@ -60,23 +83,25 @@ const ReceiptCard = ({ receipt }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {receipt.soldProducts.map((soldProduct) => (
-              <TableRow key={soldProduct._id}>
-                <TableCell>{singleProds.productName}</TableCell>
-                <TableCell>{""}</TableCell>
-                <TableCell>{singleProds.price}</TableCell>
-              </TableRow>
-            ))}
+            {(
+              singleProds.map((products, index) => (
+                <TableRow key={products._id}>
+                  <TableCell>{products.productName}</TableCell>
+                  <TableCell>{saleProducts[index].quantitySold}</TableCell>
+                  <TableCell>
+                    {products.price * saleProducts[index].quantitySold}
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </TableContainer>
 
-      <Box sx={{ textAlign: 'right', marginTop: 2 }}>
+      <Box sx={{ textAlign: "right", marginTop: 2 }}>
         <Typography variant="h6">
           Total Price: ${receipt.totalAmount}
         </Typography>
-
-      
       </Box>
     </Paper>
   );

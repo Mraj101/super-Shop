@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -33,8 +33,8 @@ const Carts = ({
   quantity,
 }) => {
   const navigate = useNavigate();
-  const [buyerName, setBuyerName] = useState('');
-  const [sellerName, setSellerName] = useState('');
+  const [buyerName, setBuyerName] = useState("");
+  const [sellerName, setSellerName] = useState("");
 
   console.log(cart, "cart in cart.js");
 
@@ -88,27 +88,29 @@ const Carts = ({
     try {
       let data = [];
       for (const item of cart) {
-        const { _id,price,  quantity } = item;
+        const { _id, price, quantity, stockId } = item;
 
-        const saleData = {
+        let saleData = {
           product_Id: _id,
+          stockId: stockId,
           quantitySold: quantity,
-          soldPrice:price,                                                                  
+          soldPrice: price,
         };
 
         let Saleres = await axios.post(
           "http://localhost:8000/api/sales/crt",
           saleData
         );
+        console.log(Saleres, "salaar");
         data.push(Saleres.data._id);
+        console.log(data, "ar");
       }
 
       try {
-        
-      const receiptData = {
-        totalAmount: calculateTotalPrice(),
-        soldProducts: data.map((saleid) => ({ sale_id: String(saleid) })),
-      };
+        const receiptData = {
+          totalAmount: calculateTotalPrice(),
+          soldProducts: data.map((saleid) => ({ sale_id: saleid })),
+        };
         const reciptRes = await axios.post(
           "http://localhost:8000/api/reciepts/crt",
           receiptData
@@ -116,6 +118,12 @@ const Carts = ({
         setCart([]);
         localStorage.removeItem("cart");
         navigate("/");
+
+        // try {
+        //   console.log(data,"trying the scope")
+        // } catch (error) {
+        //   console.log(error)
+        // }
       } catch (error) {
         console.error("Error:", error);
       }
@@ -224,33 +232,32 @@ const Carts = ({
       </Grid>
 
       <Grid item xs={4}>
-  <Paper elevation={6} style={{ padding: 16 }}>
-    <TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell >Product Name</TableCell>
-            <TableCell>Quantity</TableCell>
-            <TableCell>Subtotal Price</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody >
-          {cart.map((product) => (
-            <TableRow key={product._id}>
-              <TableCell>{product.productName}</TableCell>
-              <TableCell>{product.quantity}</TableCell>
-              <TableCell>${product.price * product.quantity}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+        <Paper elevation={6} style={{ padding: 16 }}>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Product Name</TableCell>
+                  <TableCell>Quantity</TableCell>
+                  <TableCell>Subtotal Price</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {cart.map((product) => (
+                  <TableRow key={product._id}>
+                    <TableCell>{product.productName}</TableCell>
+                    <TableCell>{product.quantity}</TableCell>
+                    <TableCell>${product.price * product.quantity}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
 
-    <Box sx={{ textAlign: "right", marginTop: 2 }}>
-      
-      {cart.length > 0 && (
-        <>
-          {/* <TextField
+          <Box sx={{ textAlign: "right", marginTop: 2 }}>
+            {cart.length > 0 && (
+              <>
+                {/* <TextField
             label="Buyer Name"
             value={buyerName}
             onChange={(e) => setBuyerName(e.target.value)}
@@ -262,24 +269,23 @@ const Carts = ({
             onChange={(e) => setSellerName(e.target.value)}
             style={{ marginBottom: 1 }}
           /> */}
-          <Typography variant="h6">
-        Total Price: ${calculateTotalPrice()}
-      </Typography>
+                <Typography variant="h6">
+                  Total Price: ${calculateTotalPrice()}
+                </Typography>
 
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleCheckout}
-            style={{ marginTop: 2 }}
-          >
-            Checkout
-          </Button>
-        </>
-      )}
-    </Box>
-  </Paper>
-</Grid>
-
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleCheckout}
+                  style={{ marginTop: 2 }}
+                >
+                  Checkout
+                </Button>
+              </>
+            )}
+          </Box>
+        </Paper>
+      </Grid>
     </Grid>
   );
 };
