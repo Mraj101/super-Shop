@@ -35,6 +35,17 @@ const Home = () => {
           
         </Link>
 
+        <Link to="/daily-sales-report" style={{ textDecoration: "none" }}>
+          <Button
+            color="primary"
+            variant="contained"
+            startIcon={<AddCircleIcon />}
+            sx={{ margin: "30px" }}
+          >
+            Daily Sales Report
+          </Button>
+        </Link>
+
         <Box mt={5} mb={0}>
           <ShowProducts />
         </Box>

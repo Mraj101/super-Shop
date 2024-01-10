@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Stocks=require("../../stocks/models/stockModels")
 const Sales = require("../models/saleModel"); // Adjust the path based on your project structure
+const SaleService=require('../../services/SaleService')
 
 const getAllSale = async (req, res) => {
   try {
@@ -22,18 +23,50 @@ const createSale = async (req, res) => {
     let data = await Sales.create(req.body);
     
 
+
+
+    //updating the stock
     if (data) {
       const stock = await Stocks.findById(data.stockId);
-
-      const updatedStock = await Stocks.findByIdAndUpdate(
-        { _id: data.stockId },
-        {
-          stockQuantity: stock.stockQuantity - data.quantitySold,
-        },
-        { new: true }
-      );
-
+      try {
+        const updatedStock = await Stocks.findByIdAndUpdate(
+          { _id: data.stockId },
+          {
+            stockQuantity: stock.stockQuantity - data.quantitySold,
+          },
+          { new: true }
+        );
+      } catch (error) {
+        res.status(500).json({error:"error while updating stock"});
+      }
     }
+
+
+
+
+    // Get today's sales
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    const todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999);
+
+    let todaySales = await Sales.find({
+      isDeleted: false,
+      createdAt: { $gte: todayStart, $lte: todayEnd },
+    });
+
+    // response = await SaleService.dailysale(data);
+
+
+    
+
+
+
+    let allSale=await Sales.find({isDeleted:false})
+
+    console.log("here is all sale")
+    console.log(allSale);
 
     return res.status(201).json(data);
   } catch (error) {
@@ -98,7 +131,9 @@ const updateSale = async (req, res) => {
   res.status(201).json(sales);
 };
 
+
 // Controller to update a product by ID
+
 
 module.exports = {
   getAllSale,

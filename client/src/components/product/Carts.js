@@ -87,6 +87,7 @@ const Carts = ({
   const handleCheckout = async () => {
     try {
       let data = [];
+
       for (const item of cart) {
         const { _id, price, quantity, stockId } = item;
 
@@ -105,6 +106,7 @@ const Carts = ({
         data.push(Saleres.data._id);
         console.log(data, "ar");
       }
+      
 
       try {
         const receiptData = {
