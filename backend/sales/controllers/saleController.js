@@ -58,15 +58,19 @@ const createSale = async (req, res) => {
 
     // response = await SaleService.dailysale(data);
 
+  
+    console.log("today sales",todaySales);
+
+    //sending the data for processing to the services 
+    const dailySale=await SaleService.dailysale(todaySales);
+
+    // console.log(`sshould return hi ${dailySale} `)
 
     
 
 
 
-    let allSale=await Sales.find({isDeleted:false})
-
-    console.log("here is all sale")
-    console.log(allSale);
+    // let allSale=await Sales.find({isDeleted:false})
 
     return res.status(201).json(data);
   } catch (error) {
