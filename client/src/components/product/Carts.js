@@ -84,6 +84,7 @@ const Carts = ({
     }
   };
 
+  
   const handleCheckout = async () => {
     try {
       let data = [];
@@ -105,8 +106,8 @@ const Carts = ({
         console.log(Saleres, "salaar");
         data.push(Saleres.data._id);
         console.log(data, "ar");
+
       }
-      
 
       try {
         const receiptData = {
@@ -129,6 +130,8 @@ const Carts = ({
       } catch (error) {
         console.error("Error:", error);
       }
+
+      //creating the daily sale
     } catch (error) {
       console.error("Error:", error);
     }

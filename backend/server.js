@@ -8,10 +8,12 @@ const DB_NAME = process.env.DB_NAME;
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+
 const productRoutes=require('./products/routes/productRoutes')
 const recieptRoutes=require('./reciepts/routes/recieptRoute')
 const saleRoutes=require('./sales/routes/saleRoute');
 const stockRoutes=require('./stocks/routes/stockRoutes');
+const dailySaleRoutes=require('./dailySale/routes/dailySaleRoutes');
 
 
 //app usage
@@ -22,6 +24,7 @@ app.use("/api/products",productRoutes);
 app.use("/api/reciepts",recieptRoutes);
 app.use("/api/sales",saleRoutes);
 app.use("/api/stocks",stockRoutes);
+app.use("/api/dailySales",dailySaleRoutes);
 
 //database connection
 mongoose.connect(URL, { dbName: DB_NAME })

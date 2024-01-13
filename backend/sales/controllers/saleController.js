@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
-const Stocks=require("../../stocks/models/stockModels")
+const Stocks = require("../../stocks/models/stockModels");
 const Sales = require("../models/saleModel"); // Adjust the path based on your project structure
-const SaleService=require('../../services/SaleService')
+const SaleService = require("../../services/SaleService");
 
 const getAllSale = async (req, res) => {
   try {
@@ -16,14 +16,10 @@ const getAllSale = async (req, res) => {
 
 // Controller to create a new product
 
-
 const createSale = async (req, res) => {
   try {
     // Create the sale
     let data = await Sales.create(req.body);
-    
-
-
 
     //updating the stock
     if (data) {
@@ -37,38 +33,15 @@ const createSale = async (req, res) => {
           { new: true }
         );
       } catch (error) {
-        res.status(500).json({error:"error while updating stock"});
+        res.status(500).json({ error: "error while updating stock" });
       }
     }
 
-
-
-
     // Get today's sales
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
-
-    const todayEnd = new Date();
-    todayEnd.setHours(23, 59, 59, 999);
-
-    let todaySales = await Sales.find({
-      isDeleted: false,
-      createdAt: { $gte: todayStart, $lte: todayEnd },
-    });
-
-    // response = await SaleService.dailysale(data);
-
-  
-    // console.log("today sales",todaySales);
-
-    //sending the data for processing to the services 
-    const dailySale=await SaleService.dailysale(todaySales);
-
-    console.log(`sshould return hi ${JSON.stringify(dailySale)} `)
-
-    
-
-
+    // const todayStart = new Date();
+    // todayStart.setHours(0, 0, 0, 0);
+    // const formatedDate=todayStart.toISOString().split('T')[0]
+    // console.log(formatedDate);
 
     // let allSale=await Sales.find({isDeleted:false})
 
@@ -78,7 +51,6 @@ const createSale = async (req, res) => {
     res.status(500).json({ messeg: "hi", error: "Internal Server Error" });
   }
 };
-
 
 // Controller to get a single product by ID
 const getSingleSale = async (req, res) => {
@@ -103,7 +75,6 @@ const getSingleSale = async (req, res) => {
     return res.status(500).json({ messege: "could not retrieve sale" });
   }
 };
-
 
 // Controller to delete a product by ID
 const deleteSaleById = async (req, res) => {
@@ -136,9 +107,7 @@ const updateSale = async (req, res) => {
   res.status(201).json(sales);
 };
 
-
 // Controller to update a product by ID
-
 
 module.exports = {
   getAllSale,
