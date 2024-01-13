@@ -15,34 +15,27 @@ async function dailysale(data) {
                 };
             }
 
-            // Accumulate quantity sold and total amount
+            // Accumulate quantity sold and multiply soldPrice by quantitySold for total amount
             acc[product_Id].quantitySold += sale.quantitySold;
-            acc[product_Id].totalAmount += parseFloat(sale.soldPrice);
-            console.log("accur",acc)
+            acc[product_Id].totalAmount += parseFloat(sale.soldPrice) * sale.quantitySold;
+
             return acc;
         }, {});
 
         // Fetch product details for each product_id
-        const ProductIdArray=Object.keys(groupedSales)
-
-        const productDetails = ProductIdArray.map(async (productId) => {
-            const product = await Products.findById(productId);
-            return {  productDetails: {
-                "_id": product._id,
-                "productName": "Iphone 14",
-                "price": 800,
-            }};
-        });
-
-
-
-    
-
-        // Convert the groupedSales object to an array
-        // const processedData = Object.values(groupedSales);
-
-        // return { processedData };
-        return productDetails
+        const productDetails = await Promise.all(
+            Object.keys(groupedSales).map(async (productId) => {
+                const product = await Products.findById(productId);
+                return {
+                    id: productId,
+                    productName: product.productName, // Change this to the actual field name for the product name
+                    totalQuantitySold: groupedSales[productId].quantitySold,
+                    totalAmount: groupedSales[productId].totalAmount,
+                };
+            })
+        );
+                console.log(productDetails,"the returned quantity");
+        return productDetails;
     } catch (error) {
         console.error(error);
         throw new Error("Error processing daily sale data");

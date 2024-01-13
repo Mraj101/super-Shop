@@ -6,7 +6,6 @@ const getAllReciepts = async (req, res) => {
     const reciepts = await Reciepts.find({ isDeleted: false }).sort({
       createdAt: -1,
     });
-    console.log(reciepts)
     res.status(200).json(reciepts);
   } catch (err) {
     res.status(500).json({ error: "internal Server Error" });
@@ -35,7 +34,6 @@ const getSingleReciept = async (req, res) => {
   try {
     const reciept = await Reciepts.findById(id);
     if (!reciept) res.status(404).json({ error: "no such product" });
-    console.log(reciept,"hey recipt")
     res.status(200).json(reciept);
   } catch (error) {
     res.status(404).json({ error: error.msg });

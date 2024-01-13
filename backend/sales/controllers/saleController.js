@@ -59,12 +59,12 @@ const createSale = async (req, res) => {
     // response = await SaleService.dailysale(data);
 
   
-    console.log("today sales",todaySales);
+    // console.log("today sales",todaySales);
 
     //sending the data for processing to the services 
     const dailySale=await SaleService.dailysale(todaySales);
 
-    // console.log(`sshould return hi ${dailySale} `)
+    console.log(`sshould return hi ${JSON.stringify(dailySale)} `)
 
     
 
@@ -123,6 +123,7 @@ const updateSale = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: "no such workout or id" });
   }
+
   const sales = await Sales.findByIdAndUpdate(
     { _id: id },
     {
