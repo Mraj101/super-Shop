@@ -1,26 +1,27 @@
 const mongoose = require("mongoose");
 const DailySale = require("../models/DailySale");
 
-// const getAll = async (req, res) => {
-//   try {
-
-//   } catch (err) {
-//     res.status(500).json({ error: "internal Server Error" });
-//   }
-// };
-
-// Controller to create a new product
-const createDailySale = async (req, res) => {
+const getDailySale = async (req, res) => {
   try {
-    let date=req.body
-    console.log("ji hello")
+    
 
-  } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Internal Server Error and daily sale not found" });
+  } catch (err) {
+    res.status(500).json({ error: "internal Server Error" });
   }
 };
+
+// Controller to create a new product
+// const createDailySale = async (req, res) => {
+//   try {
+//     let date=req.body
+//     console.log("ji hello")
+
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ error: "Internal Server Error and daily sale not found" });
+//   }
+// };
 
 // Controller to get a single product by ID
 const single = async (req, res) => {
@@ -65,9 +66,9 @@ const updateDailysale = async (req, res) => {
 // Controller to update a product by ID
 
 module.exports = {
-  // getAll,
-  createDailySale,
-  single,
-  deleteDailysale,
-  updateDailysale,
+  getDailySale
+  // createDailySale,
+  // single,
+  // deleteDailysale,
+  // updateDailysale,
 };

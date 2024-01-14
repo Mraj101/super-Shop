@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Stocks = require("../../stocks/models/stockModels");
 const Sales = require("../models/saleModel"); // Adjust the path based on your project structure
 const SaleService = require("../../services/SaleService");
-const DailySale = require("../../dailySale/models/DailySale");
+const DailySaleModels = require("../../dailySale/models/DailySale");
 
 const getAllSale = async (req, res) => {
   try {
@@ -21,7 +21,7 @@ const createSale = async (req, res) => {
   try {
     // Create the sale
     let data = await Sales.create(req.body.saleData);
-    console.log("the big data", data);
+    console.log(req.body.cartArray, "cart");
 
     // Updating the stock
     if (data) {
@@ -34,40 +34,58 @@ const createSale = async (req, res) => {
           },
           { new: true }
         );
+        console.log("Stock updated:", updatedStock);
       } catch (error) {
+        console.error("Error updating stock:", error);
         res.status(500).json({ error: "error while updating stock" });
+        return;
       }
     }
 
-   
-
-    //date definition
-    let todayStart=new Date();
-    todayStart.setHours(0,0,0,0);
+    // Fetch today's sales
+    let todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
     let todayEnd = new Date();
-    todayEnd.setHours(23,59,59,999);
+    todayEnd.setHours(23, 59, 59, 999);
 
-    let todaySales = await Sales.find({
-      isDeleted: false,
-      createdAt: { $gte: todayStart, $lte: todayEnd },
+    // Check if a daily sale entry for today exists
+    let dailySale = await DailySaleModels.findOne({
+      date: { $gte: todayStart, $lte: todayEnd },
     });
 
-    const dailySale=await SaleService.dailysale(todaySales);
+    if (!dailySale) {
+      // If no daily sale entry exists, create a new one
+      dailySale = await DailySaleModels.create({
+        date: todayStart,
+        data: [{
+          product_Id: req.body.cartArray._id,
+          productName: req.body.cartArray.productName,
+          quantity: req.body.cartArray.quantity,
+        }],
+      });
+    } else {
+      // If daily sale entry exists, update it
+      const existingProductIndex = dailySale.data.findIndex(
+        (product) => product.product_Id === req.body.cartArray._id
+      );
+
+      if (existingProductIndex !== -1) {
+        // If the product is already in the daily sale entry, update the quantity
+        dailySale.data[existingProductIndex].quantity = Number(dailySale.data[existingProductIndex].quantity)+Number(req.body.cartArray.quantity);
+      } else {
+        // If the product is not in the daily sale entry, add a new entry
+        dailySale.data.push({
+          product_Id: req.body.cartArray._id,
+          productName: req.body.cartArray.productName,
+          quantity: req.body.cartArray.quantity,
+        });
+      }
+    }
 
 
-    // console.log(dailySale,"good things here");
-
-    // // If a daily sale entry for today exists, update it; otherwise, create a new one
-    // console.log(dailySale,"more good things here");
-
-    // if (dailySale) {
-    //   dailySale.push(dailySale);
-    //   await dailySale.save();
-    //   console.log("Sale added to existing daily sale");
-    // } else {
-    //   dailySale = await DailySale.create({  saleSDaily });
-    //   console.log("New daily sale entry created for today");
-    // }
+    // Save the updated or new daily sale entry
+    await dailySale.save();
+    console.log("Sale added to daily sale:", dailySale);
 
     return res.status(201).json(data);
   } catch (error) {
@@ -87,7 +105,6 @@ const getSingleSale = async (req, res) => {
     }
 
     const sale = await Sales.findById(id);
-   
 
     if (!sale) {
       return res.status(404).json({ error: "no such sales document" });
@@ -100,7 +117,6 @@ const getSingleSale = async (req, res) => {
   }
 };
 
-
 // Controller to delete a product by ID
 const deleteSaleById = async (req, res) => {
   const { id } = req.params;
@@ -112,7 +128,6 @@ const deleteSaleById = async (req, res) => {
 
   return res.status(201).json(sales);
 };
-
 
 const updateSale = async (req, res) => {
   const { id } = req.params;

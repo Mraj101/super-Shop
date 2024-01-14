@@ -6,14 +6,19 @@ const DailySaleSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
-    totalSalePrice: {
-      type: Number,
-      required: true,
-    },
-    totalUnitsSold: {
-      type: Number,
-      required: true,
-    },
+    data: [
+      {
+        product_Id: {
+          type: String,
+        },
+        productName: {
+          type: String,
+        },
+        quantity: {
+          type: Number,
+        },
+      },
+    ],
     isActive: {
       type: Boolean,
       default: true,
@@ -28,6 +33,6 @@ const DailySaleSchema = new mongoose.Schema(
   }
 );
 
-const DailySale = mongoose.model("DailySale", DailySaleSchema);
+const DailySale = mongoose.model("DailySaleModels", DailySaleSchema);
 
 module.exports = DailySale;
