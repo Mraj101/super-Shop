@@ -56,7 +56,6 @@ const getSingleProduct = async (req, res) => {
       stockQuantity: stk ? stk.stockQuantity : null,
     };
 
-    console.log("Product data:", data);
     return res.status(200).json(data);
   } catch (error) {
     console.error("Error in getSingleProduct:", error);

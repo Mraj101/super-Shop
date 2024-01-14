@@ -34,7 +34,7 @@ async function dailysale(data) {
                 };
             })
         );
-                console.log(productDetails,"the returned quantity");
+                console.log("the returned quantity",productDetails);
         return productDetails;
     } catch (error) {
         console.error(error);

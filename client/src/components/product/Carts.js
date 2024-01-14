@@ -100,13 +100,11 @@ const Carts = ({
         };
 
         let Saleres = await axios.post(
-          "http://localhost:8000/api/sales/crt",
-          saleData
+          "http://localhost:8000/api/sales/crt",{saleData:saleData,cartArray:cart}
         );
         console.log(Saleres, "salaar");
         data.push(Saleres.data._id);
         console.log(data, "ar");
-
       }
 
       try {

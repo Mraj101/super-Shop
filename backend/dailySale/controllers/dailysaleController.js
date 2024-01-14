@@ -14,14 +14,6 @@ const createDailySale = async (req, res) => {
   try {
     let date=req.body
     console.log("ji hello")
-    // console.log(date.sethours(0,0,0,0),"hours are set to")
-
-    // let todaySales = await Sales.find({
-    //   isDeleted: false,
-    //   createdAt: { $gte: todayStart, $lte: todayEnd },
-    // });
-
-    // const dailySale=await SaleService.dailysale(todaySales);
 
   } catch (error) {
     res

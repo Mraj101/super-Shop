@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Stocks = require("../../stocks/models/stockModels");
 const Sales = require("../models/saleModel"); // Adjust the path based on your project structure
 const SaleService = require("../../services/SaleService");
+const DailySale = require("../../dailySale/models/DailySale");
 
 const getAllSale = async (req, res) => {
   try {
@@ -19,9 +20,10 @@ const getAllSale = async (req, res) => {
 const createSale = async (req, res) => {
   try {
     // Create the sale
-    let data = await Sales.create(req.body);
+    let data = await Sales.create(req.body.saleData);
+    console.log("the big data", data);
 
-    //updating the stock
+    // Updating the stock
     if (data) {
       const stock = await Stocks.findById(data.stockId);
       try {
@@ -37,13 +39,35 @@ const createSale = async (req, res) => {
       }
     }
 
-    // Get today's sales
-    // const todayStart = new Date();
-    // todayStart.setHours(0, 0, 0, 0);
-    // const formatedDate=todayStart.toISOString().split('T')[0]
-    // console.log(formatedDate);
+   
 
-    // let allSale=await Sales.find({isDeleted:false})
+    //date definition
+    let todayStart=new Date();
+    todayStart.setHours(0,0,0,0);
+    let todayEnd = new Date();
+    todayEnd.setHours(23,59,59,999);
+
+    let todaySales = await Sales.find({
+      isDeleted: false,
+      createdAt: { $gte: todayStart, $lte: todayEnd },
+    });
+
+    const dailySale=await SaleService.dailysale(todaySales);
+
+
+    // console.log(dailySale,"good things here");
+
+    // // If a daily sale entry for today exists, update it; otherwise, create a new one
+    // console.log(dailySale,"more good things here");
+
+    // if (dailySale) {
+    //   dailySale.push(dailySale);
+    //   await dailySale.save();
+    //   console.log("Sale added to existing daily sale");
+    // } else {
+    //   dailySale = await DailySale.create({  saleSDaily });
+    //   console.log("New daily sale entry created for today");
+    // }
 
     return res.status(201).json(data);
   } catch (error) {
@@ -52,18 +76,18 @@ const createSale = async (req, res) => {
   }
 };
 
+
 // Controller to get a single product by ID
 const getSingleSale = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id, "get sale");
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(404).json({ error: "no such sale is listed" });
     }
 
     const sale = await Sales.findById(id);
-    console.log(sale, "sale ar");
+   
 
     if (!sale) {
       return res.status(404).json({ error: "no such sales document" });
@@ -76,6 +100,7 @@ const getSingleSale = async (req, res) => {
   }
 };
 
+
 // Controller to delete a product by ID
 const deleteSaleById = async (req, res) => {
   const { id } = req.params;
@@ -87,6 +112,7 @@ const deleteSaleById = async (req, res) => {
 
   return res.status(201).json(sales);
 };
+
 
 const updateSale = async (req, res) => {
   const { id } = req.params;
