@@ -102,9 +102,7 @@ const MonthlyReport = () => {
                 <React.Fragment key={sale._id}>
                   <TableRow>
                     <TableCell rowSpan={sale.data.length + 1}>
-                      {index === 0
-                        ? new Date(sale._id.date).toLocaleDateString()
-                        : null}
+                      {sale.createdAt.split('T')[0]}
                     </TableCell>
                   </TableRow>
                   {sale.data.map((product) => (

@@ -52,9 +52,9 @@ const getDailySale = async (req, res) => {
       const endDay=new Date(y,m+1,0)
       console.log(endDay,"end day");
       endDay.setHours(23,59,59,999);
-      const MonthlYdata=await DailySaleModels.find({createdAt:{$gte:startDay,$lte:endDay}})
+      const MonthlYdata=await DailySaleModels.find({createdAt:{$gte:startDay,$lte:endDay}}).lean()
       
-      console.log(MonthlYdata,"hi monthly data")
+      console.log(JSON.stringify(MonthlYdata),"hi monthly data")
 
       const updatedMonthlyData = await Promise.all(
         MonthlYdata.map(async (dailyItem) => {
@@ -75,7 +75,7 @@ const getDailySale = async (req, res) => {
           };
         })
       );
-  
+      console.log(updatedMonthlyData,"hi updated monthly")
       return res.status(201).json(updatedMonthlyData);
     }
     
