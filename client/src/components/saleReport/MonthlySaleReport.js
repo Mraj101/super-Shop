@@ -15,90 +15,68 @@ import {
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EventIcon from "@mui/icons-material/Event";
-import DateRangeIcon from "@mui/icons-material/DateRange";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const DailyReport = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
- 
-  const [dailySales, setDailySales] = useState([]);
 
-  const navigate = useNavigate();
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-
-  // const handleMonthChange = (month) => {
-  //   // setSelectedMonth(month);
-  //   // let monthDates=new Date(month);
-  //   // let y=monthDates.getFullYear();
-  //   // let m=monthDates.getMonth();
-  //   // let startDay=new Date(y,m,1);
-  //   setSelectedMonth(month);
-  // };
-
- 
-
+const MonthlyReport = () => {
+    const [selectedMonth, setSelectedMonth] = useState(new Date());
+    const [monthlySales, setMonthlySales] = useState([]);
+    const navigate = useNavigate();
   
-
-  const handleFetchTodaySales = async () => {
-    try {
-      const dailySaleRes = await axios.post(
-        "http://localhost:8000/api/dailySales/getSale",
-        { date: selectedDate }
-      );
-
-      // Set the fetched data to the state
-      setDailySales(dailySaleRes.data);
-    } catch (error) {
-      console.error(error);
-      // Handle error
-    }
-  };
-
-  console.log(dailySales,"daily sale data");
-
-  return (
-    <div>
-      <Button
+    const handleMonthChange = (month) => {
+      setSelectedMonth(month);
+    };
+  
+    const handleFetchMonthlySales = async () => {
+      try {
+        const monthlySaleRes = await axios.post(
+          "http://localhost:8000/api/dailySales/getSale",
+          { month: selectedMonth }
+        );
+        setMonthlySales(monthlySaleRes.data);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+  
+    console.log(monthlySales,"hi montly");
+    return (
+      <div>
+        <Button
         variant="outlined"
         color="primary"
         onClick={() => navigate("/")}
         sx={{ position: "absolute", top: "80px", left: "50px" }}
-      >
-        <ArrowBackIcon /> Back
-      </Button>
-      <div style={{ textAlign: "center" }}>
-        <Typography variant="h5">Select Date.</Typography>
-        <Grid container spacing={2} alignItems="center" justifyContent="center">
-          <Grid item>
-            <TextField
-              label="Select Date"
-              type="date"
-              value={selectedDate.toISOString().split("T")[0]}
-              onChange={(e) => handleDateChange(new Date(e.target.value))}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <DateRangeIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleFetchTodaySales}
-            >
-              Fetch Today's Sales
-            </Button>
-          </Grid>
-        </Grid>
-
+      ><ArrowBackIcon />Go Home</Button>
+        {/* ... (back button and other elements remain the same) */}
+        <Typography variant="h5" marginTop={8} marginBottom={3}>Select Month and Year</Typography>
+  
+        {/* Month and Year Picker for Monthly Sales */}
+        <TextField
+          sx={{ marginRight: "10px" }}
+          label="Select Month and Year"
+          type="month"
+          value={selectedMonth}
+          onChange={(e) => handleMonthChange(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <EventIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+  
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleFetchMonthlySales}
+        >
+          Fetch Monthly Sales
+        </Button>
+  
         {/* Display the sales report table */}
         <TableContainer
           component={Paper}
@@ -120,12 +98,12 @@ const DailyReport = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {dailySales.map((sale, index) => (
+              {monthlySales.map((sale, index) => (
                 <React.Fragment key={sale._id}>
                   <TableRow>
                     <TableCell rowSpan={sale.data.length + 1}>
                       {index === 0
-                        ? new Date(sale.date).toLocaleDateString()
+                        ? new Date(sale._id.date).toLocaleDateString()
                         : null}
                     </TableCell>
                   </TableRow>
@@ -165,8 +143,8 @@ const DailyReport = () => {
           </Table>
         </TableContainer>
       </div>
-    </div>
-  );
-};
-
-export default DailyReport;
+    );
+  };
+  
+  export default MonthlyReport;
+  

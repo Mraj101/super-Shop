@@ -3,8 +3,11 @@ const DailySaleModels = require("../models/DailySale");
 const productModels = require("../../products/models/productModels");
 
 const getDailySale = async (req, res) => {
+
   try {
-    const startDate = new Date(req.body.date);
+    if(req.body.date)
+    {
+      const startDate = new Date(req.body.date);
     startDate.setHours(0, 0, 0, 0);
     const todayEnd = new Date(req.body.date);
     todayEnd.setHours(23, 59, 59, 999);
@@ -36,6 +39,46 @@ const getDailySale = async (req, res) => {
     );
 
     return res.status(201).json(updatedDailyData);
+
+
+    }else{
+      const months = new Date(req.body.month);
+      console.log(months,"hi months")
+      let y=months.getFullYear();
+      let m=months.getMonth();
+      const startDay=new Date(y,m,1);
+      console.log(startDay,"hi vai");
+      startDay.setHours(0,0,0,0);
+      const endDay=new Date(y,m+1,0)
+      console.log(endDay,"end day");
+      endDay.setHours(23,59,59,999);
+      const MonthlYdata=await DailySaleModels.find({createdAt:{$gte:startDay,$lte:endDay}})
+      
+      console.log(MonthlYdata,"hi monthly data")
+
+      const updatedMonthlyData = await Promise.all(
+        MonthlYdata.map(async (dailyItem) => {
+          const updatedData = await Promise.all(
+            dailyItem.data.map(async (product) => {
+              const productDetails = await productModels.findById(product.product_Id).lean();
+              const price = productDetails ? productDetails.price : null;
+              return {
+                ...product,
+                price: price ? product.quantity * price : null
+              };
+            })
+          );
+  
+          return {
+            ...dailyItem,
+            data: updatedData
+          };
+        })
+      );
+  
+      return res.status(201).json(updatedMonthlyData);
+    }
+    
   } catch (err) {
     console.log(err, "before internal server error");
     res.status(500).json({ error: "Internal Server Error" });

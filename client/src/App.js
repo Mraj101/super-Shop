@@ -11,6 +11,7 @@ import UpdateStock from "./components/stocks/UpdateStock";
 import Reciepts from "./components/Reciepts/Reciepts";
 import DailyReport from "./components/saleReport/DailyReport";
 import Invoice from "./components/Reciepts/Invoice";
+import MonthlyReport from "./components/saleReport/MonthlySaleReport";
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -62,6 +63,7 @@ function App() {
           
           <Route path={"/daily-sales-report"} element={<DailyReport
           />} />
+           <Route path={"/monthly-sales-report"} element={<MonthlyReport/>} />
 
           <Route path={'/invoice'} element={<Invoice/>}/>
         </Routes>
