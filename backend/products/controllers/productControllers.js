@@ -13,7 +13,6 @@ const getAllProducts = async (req, res) => {
   }
 };
 
-
 // Controller to create a new product
 const createProduct = async (req, res) => {
   let { productData, stockData } = req.body;

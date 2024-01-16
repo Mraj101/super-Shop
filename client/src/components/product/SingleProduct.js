@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 import {
   Button,
   Box,
@@ -16,7 +16,7 @@ import {
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
   const { id } = useParams();
@@ -25,7 +25,7 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
   const [loading, setIsLoading] = useState(false);
   const [stockErrorMessage, setStockErrorMessage] = useState("");
   const [availableStock, setAvailableStock] = useState("");
- 
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -81,8 +81,18 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
   //     );
   //   }
   // };
+  const handleChange = (e) => {
+    const enteredQuantity = Number(e.target.value);
 
-  
+    if (enteredQuantity <= Number(singleProduct.stockQuantity)) {
+      setQuantity(enteredQuantity);
+      setStockErrorMessage("");
+    } else {
+      setStockErrorMessage(
+        `You can only have ${singleProduct.stockQuantity} products in stock`
+      );
+    }
+  };
 
   const handleCart = () => {
     // let itemInCart =Array.isArray(cart) && cart.some((item) => item._id === singleProduct._id);
@@ -151,132 +161,94 @@ const SingleProduct = ({ cart, setCart, setAddedItems, addedItems }) => {
   //console.log(cart, "final cart");
 
   return (
-    <Box display="flex" justifyContent="center" mt={2} p={5}>
-      <Card
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "80vh",
-          height: "38vh",
-          border: "1px solid aqua",
-          position: "relative",
-          boxShadow: "1px 1px 10px black",
-        }}
-      >
-        <Box style={{ height: "65%", position: "relative" }}>
+    <>
+      {singleProduct.imageUrl ? (
+        <Box display="flex" justifyContent="center" mt={2} p={5}>
 
-          <CardMedia
-            component="img"
-            alt={singleProduct.productName}
-            height="200"
-            image={`${singleProduct.imageUrl}`}
-            sx={{ width: "50%", height: "40%", objectFit: "contain" }}
-          />
-          <CardContent>
-            {/* <Typography variant="h5" component="div">
-                {singleProduct.productName}
-              </Typography> */}
-            <Typography variant="body2" color="text.secondary">
-              <span style={{ fontWeight: "bold" }}>Product Name:</span>{" "}
-              {singleProduct.productName}
-            </Typography>
-          </CardContent>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => navigate("/")}
+            sx={{ position: "absolute", top: "80px", left: "50px" }}
+          >
+            <ArrowBackIcon /> Back
+          </Button>
 
-          <CardContent style={{ flex: 1 }}>
-            {/* <Typography variant="h5" component="div">
-                {singleProduct.productName}
-              </Typography> */}
-            <Typography variant="body2" color="text.secondary">
-              <span style={{ fontWeight: "bold" }}> Product Description:</span>{" "}
-              {singleProduct.description}
-            </Typography>
-          </CardContent>
-
-
-          <CardContent>
-            {/* <Typography variant="h5" component="div">
-                {singleProduct.productName}
-              </Typography> */}
-            <Typography variant="body2" color="text.secondary">
-              <span style={{ fontWeight: "bold" }}>Stock:</span>{" "}
-              {singleProduct.stockQuantity}
-            </Typography>
-          </CardContent>
-        </Box>
-
-        <Box
-          display="flex"
-          flexDirection="row"
-          justifyContent="flex-end"
-          style={{
-            width: "96%",
-            padding: "10px",
-            position: "absolute",
-            bottom: 0,
-            right: 0,
-          }}
-        >
-          {/* <Box display="flex" flexDirection="row" sx={{ width: "30%" }}> */}
-          {/* <IconButton onClick={handleDecrease}>
-              <RemoveIcon />
-            </IconButton> */}
-
-          {/* <Box>
-              <TextField
-                style={{ width: "90%" }}
-                label="Quantity"
-                name="quantity"
-                value={quantity}
-                onChange={handleChange}
+          <Box display="flex" justifyContent="center" mt={2} p={5}>
+            <Card
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                width: "80vh",
+                height: "38vh",
+                border: "1px solid aqua",
+                position: "relative",
+                boxShadow: "1px 1px 10px black",
+              }}
+            >
+              <CardMedia
+                component="img"
+                alt={singleProduct.productName}
+                height="200"
+                image={`${singleProduct.imageUrl}`}
+                sx={{ width: "35%", height: "100%", objectFit: "contain" }}
               />
-              {stockErrorMessage &&  (
-                <Typography color="error">{ stockErrorMessage }</Typography>
-              )}
+              <CardContent style={{ flex: 1, padding: "16px" }}>
+                <Typography variant="h5" component="div">
+                  {singleProduct.productName}
+                </Typography>
 
-              {availableStock && (
-                <Typography color="error">{ availableStock }</Typography>
-              )
-              }
-            </Box> */}
-          {/* <IconButton >
-              <AddIcon />
-            </IconButton>
-          </Box> */}
+                <Typography variant="body2" color="text.secondary">
+                  <span style={{ fontWeight: "bold" }}>
+                    Product Description:
+                  </span>{" "}
+                  {singleProduct.description}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  <span style={{ fontWeight: "bold" }}>Price:</span>{" "}
+                  {singleProduct.price}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  <span style={{ fontWeight: "bold" }}>Stock:</span>{" "}
+                  {singleProduct.stockQuantity}
+                </Typography>
 
-          <Box sx={{ width: "50px", position: "relative" }}>
-            {/* <IconButton
-                color="primary"
-                onClick={handleCart }
-                disabled={flag === false ? false : true}
-              >
-                <AddShoppingCartIcon sx={{ fontSize: 50 }} />
-              </IconButton> */}
+                <TextField
+                  style={{ marginTop: "16px", width: "80%" }}
+                  label="Quantity"
+                  name="quantity"
+                  value={quantity}
+                  onChange={(e) => setQuantity(Number(e.target.value))}
+                />
 
-            {/* {addedItems[singleProduct._id] ? (
-              <Button
-                onClick={handleRemove}
-                variant="contained"
-                color="secondary"
-                sx={{
-                  fontSize: 14,
-                  marginLeft: 1,
-                  position: "absolute",
-                  right: "1px",
-                }}
-              >
-                Remove from Cart
-              </Button>
-            )  */}
-            <IconButton color="primary" onClick={handleCart}>
-              <AddShoppingCartIcon
-                disabled={quantity > Number(singleProduct.stock)}
-                sx={{ fontSize: 50 }}
-              />
-            </IconButton>
+                {/* Add your error messages here if needed */}
+
+                {stockErrorMessage && (
+                  <Typography color="error">{stockErrorMessage}</Typography>
+                )}
+                <IconButton
+                  color="primary"
+                  onClick={handleCart}
+                  disabled={quantity > Number(singleProduct.stockQuantity)}
+                  sx={{ position: "absolute", bottom: "0" }}
+                >
+                  <AddShoppingCartIcon sx={{ fontSize: 50 }} />
+                </IconButton>
+              </CardContent>
+            </Card>
           </Box>
         </Box>
-      </Card>
-    </Box>
+      ) : (
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          height="100vh" // You can adjust the height as needed
+        >
+          <CircularProgress color="primary" size={80} />
+        </Box>
+      )}
+    </>
   );
 };
 

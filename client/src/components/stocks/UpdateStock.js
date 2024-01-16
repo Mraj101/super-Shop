@@ -13,6 +13,8 @@ import {
   CircularProgress,
   TextField,
 } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+
 import UpdateIcon from "@mui/icons-material/Update";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -95,7 +97,17 @@ const UpdateStock = ({ cart, setCart, setAddedItems, addedItems }) => {
   return (
     <>
       {prod && prod.stock ? (
+
         <Box display="flex" justifyContent="center" mt={2} p={5}>
+          <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => navigate("/")}
+          sx={{ position: "absolute", top: "80px", left: "50px" }}
+          >
+          <ArrowBackIcon /> Back
+          </Button>
+        
           <Card
             style={{
               display: "flex",

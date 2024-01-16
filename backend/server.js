@@ -13,7 +13,7 @@ const productRoutes=require('./products/routes/productRoutes')
 const recieptRoutes=require('./reciepts/routes/recieptRoute')
 const saleRoutes=require('./sales/routes/saleRoute');
 const stockRoutes=require('./stocks/routes/stockRoutes');
-const dailySaleRoutes=require('./dailySale/routes/dailySaleRoutes');
+const dailySaleRoute=require('./dailySale/routes/dailySaleRoutes');
 
 
 //app usage
@@ -24,7 +24,7 @@ app.use("/api/products",productRoutes);
 app.use("/api/reciepts",recieptRoutes);
 app.use("/api/sales",saleRoutes);
 app.use("/api/stocks",stockRoutes);
-app.use("/api/dailySales",dailySaleRoutes);
+app.use("/api/dailySales",dailySaleRoute);
 
 //database connection
 mongoose.connect(URL, { dbName: DB_NAME })

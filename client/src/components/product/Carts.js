@@ -17,6 +17,8 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -129,15 +131,27 @@ const Carts = ({
         console.error("Error:", error);
       }
 
-      //creating the daily sale
+
+      navigate('/');
+      
     } catch (error) {
       console.error("Error:", error);
     }
+    
   };
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={8}>
+      <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => navigate("/")}
+          sx={{ position: "absolute", top: "80px", left: "50px" }}
+          >
+          <ArrowBackIcon /> Home
+          </Button>
+        
+      <Grid item xs={8} marginTop={10}>
         <div>
           <h2>Cart Items</h2>
           {cart.length !== 0 ? (
@@ -169,7 +183,7 @@ const Carts = ({
                   </Typography>
 
                   <Typography variant="body2" color="text.secondary">
-                    Total Quantity:{" "}
+                    Added Quantity:{" "}
                     {product.quantity > Number(product.stock)
                       ? product.stock
                       : product.quantity}
@@ -182,7 +196,7 @@ const Carts = ({
                       marginTop: 1,
                     }}
                   >
-                    <IconButton
+                    {/* <IconButton
                       aria-label="remove"
                       onClick={() => handleQuantityChange(-1)}
                     >
@@ -200,7 +214,7 @@ const Carts = ({
                       onClick={() => handleQuantityChange(1)}
                     >
                       <AddIcon />
-                    </IconButton>
+                    </IconButton> */}
                   </Box>
 
                   <Button

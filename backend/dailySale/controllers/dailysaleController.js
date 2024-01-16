@@ -1,14 +1,47 @@
 const mongoose = require("mongoose");
-const DailySale = require("../models/DailySale");
+const DailySaleModels = require("../models/DailySale");
+const productModels = require("../../products/models/productModels");
 
 const getDailySale = async (req, res) => {
   try {
-    
+    const startDate = new Date(req.body.date);
+    startDate.setHours(0, 0, 0, 0);
+    const todayEnd = new Date(req.body.date);
+    todayEnd.setHours(23, 59, 59, 999);
 
+    const formattedStartdate = startDate.toISOString().split('T')[0];
+
+    const dailyData = await DailySaleModels.find({
+      createdAt: { $gte: startDate, $lte: todayEnd }
+    }).lean();
+
+    const updatedDailyData = await Promise.all(
+      dailyData.map(async (dailyItem) => {
+        const updatedData = await Promise.all(
+          dailyItem.data.map(async (product) => {
+            const productDetails = await productModels.findById(product.product_Id).lean();
+            const price = productDetails ? productDetails.price : null;
+            return {
+              ...product,
+              price: price ? product.quantity * price : null
+            };
+          })
+        );
+
+        return {
+          ...dailyItem,
+          data: updatedData
+        };
+      })
+    );
+
+    return res.status(201).json(updatedDailyData);
   } catch (err) {
-    res.status(500).json({ error: "internal Server Error" });
+    console.log(err, "before internal server error");
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 // Controller to create a new product
 // const createDailySale = async (req, res) => {
