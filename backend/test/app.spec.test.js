@@ -1,6 +1,9 @@
 // const assert = require('assert');
 const {expect}=require('chai')
 const {add} =require('../app')
+const { Calculator } = require('./calculator');
+
+
 describe('describing add function here',()=>{
 
     it("should add 2 numbers",()=>{
@@ -23,3 +26,12 @@ describe('describing add function here',()=>{
         expect(result).to.be.equal(0)
     });
 });
+
+describe("testing calculator", () => {
+    it("check something", function () {
+      let calculator = new Calculator();
+      let result=calculator.add(2,3);
+      expect(result).to.be.equal(5)
+    });
+  });
+  
