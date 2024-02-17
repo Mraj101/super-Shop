@@ -1,90 +1,18 @@
 const mongoose = require("mongoose");
 const DailySaleModels = require("../models/DailySale");
 const productModels = require("../../products/models/productModels");
+const Services = require("../../services/dailysaleService");
 
 const getDailySale = async (req, res) => {
-
+  console.log("req.body", req.body);
   try {
-    if(req.body.date)
-    {
-      const startDate = new Date(req.body.date);
-    startDate.setHours(0, 0, 0, 0);
-    const todayEnd = new Date(req.body.date);
-    todayEnd.setHours(23, 59, 59, 999);
-
-    const formattedStartdate = startDate.toISOString().split('T')[0];
-
-    const dailyData = await DailySaleModels.find({
-      createdAt: { $gte: startDate, $lte: todayEnd }
-    }).lean();
-
-    const updatedDailyData = await Promise.all(
-      dailyData.map(async (dailyItem) => {
-        const updatedData = await Promise.all(
-          dailyItem.data.map(async (product) => {
-            const productDetails = await productModels.findById(product.product_Id).lean();
-            const price = productDetails ? productDetails.price : null;
-            return {
-              ...product,
-              price: price ? product.quantity * price : null
-            };
-          })
-        );
-
-        return {
-          ...dailyItem,
-          data: updatedData
-        };
-      })
-    );
-
-    return res.status(201).json(updatedDailyData);
-
-
-    }else{
-      const months = new Date(req.body.month);
-      console.log(months,"hi months")
-      let y=months.getFullYear();
-      let m=months.getMonth();
-      const startDay=new Date(y,m,1);
-      console.log(startDay,"hi vai");
-      startDay.setHours(0,0,0,0);
-      const endDay=new Date(y,m+1,0)
-      console.log(endDay,"end day");
-      endDay.setHours(23,59,59,999);
-      const MonthlYdata=await DailySaleModels.find({createdAt:{$gte:startDay,$lte:endDay}}).lean()
-      
-      console.log(JSON.stringify(MonthlYdata),"hi monthly data")
-
-      const updatedMonthlyData = await Promise.all(
-        MonthlYdata.map(async (dailyItem) => {
-          const updatedData = await Promise.all(
-            dailyItem.data.map(async (product) => {
-              const productDetails = await productModels.findById(product.product_Id).lean();
-              const price = productDetails ? productDetails.price : null;
-              return {
-                ...product,
-                price: price ? product.quantity * price : null
-              };
-            })
-          );
-  
-          return {
-            ...dailyItem,
-            data: updatedData
-          };
-        })
-      );
-      console.log(updatedMonthlyData,"hi updated monthly")
-      return res.status(201).json(updatedMonthlyData);
-    }
-    
+    const updatedData = await Services.dailySaleService(req.body);
+    return res.status(201).json(updatedData);
   } catch (err) {
     console.log(err, "before internal server error");
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 
 // Controller to create a new product
 // const createDailySale = async (req, res) => {
@@ -100,6 +28,7 @@ const getDailySale = async (req, res) => {
 // };
 
 // Controller to get a single product by ID
+
 const single = async (req, res) => {
   try {
   } catch (error) {
@@ -142,7 +71,7 @@ const updateDailysale = async (req, res) => {
 // Controller to update a product by ID
 
 module.exports = {
-  getDailySale
+  getDailySale,
   // createDailySale,
   // single,
   // deleteDailysale,
